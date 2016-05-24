@@ -69,7 +69,7 @@ for i=1:nBar
     % Colour it in correctly
     set(hhb(i),'FaceColor',C(k,:),'EdgeColor','none');
     if ~isempty(baseval)
-        set(hhb{i},'BaseValue',baseval);
+        set(hhb(i),'BaseValue',baseval);
     end
 end
 
