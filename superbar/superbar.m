@@ -14,36 +14,47 @@
 %   hb: handles of bars
 %   he: handles of error bars
 
-function [hhb,hhe] = superbar(X, Y, E, C, CE, width, ori, baseval)
+function [hhb,hhe] = superbar(X, Y, varargin)
 
 % Input handling
+if ischar(Y)
+    % Deal with omitted X input
+    varargin = [{Y}, varargin];
+    Y = X;
+    X = 1:size(Y, 1);
+end
 if isempty(X)
-    X = 1:size(Y,1);
+    X = 1:size(Y, 1);
 end
-if nargin<3 || isempty(E)
-    E = [];
+% Use parser for the rest of the arguments
+parser = inputParser;
+addParameter(parser, 'E', []);
+addParameter(parser, 'C', []);
+addParameter(parser, 'CE', []);
+addParameter(parser, 'width', [], @isnumeric);
+addParameter(parser, 'orientation', 'v');
+addParameter(parser, 'baseval', 0);
+% addParameter(parser, 'theme', 'light');
+parse(parser, varargin{:});
+
+input = parser.Results;
+
+if isempty(input.width)
+    % Default with 0.8 of the smallest distance between bars
+    input.width = 0.8 * min(diff(sort(X(:))));
 end
-if nargin<4 || isempty(C)
-    C = [.4 .4 .4];
+if isempty(input.C)
+    input.C = [.4 .4 .4];
 end
-if nargin<5 || isempty(CE)
-    CE = 0.7*C;
-end
-if nargin<6 || isempty(width)
-    width = 0.8;
-end
-if nargin<7 || isempty(ori)
-    ori = 'v';
-end
-if nargin<8 || isempty(baseval)
-    baseval = [];
+if isempty(input.CE)
+    input.CE = 0.7 * input.C;
 end
 
-if size(C,1)~=size(CE,1)
+if size(input.C,1)~=size(input.CE,1)
     error('Number of colours for error does not match colours for bars');
 end
 
-[X, Y, width] = bar2grouped(X, Y, width);
+[X, Y, input.width] = bar2grouped(X, Y, input.width);
 
 % Check if hold is already on
 wasHeld = ishold(gca);
@@ -58,18 +69,18 @@ hhb = nan(nBar,1);
 hhe = nan(nBar,2);
 for i=1:nBar
     % Check which colour to use
-    k = mod(i-1,size(C,1))+1;
+    k = mod(i-1,size(input.C,1))+1;
     % Plot bar with error
-    if isempty(E)
-        hhb(i) = bare(X(i), Y(i), [], width, ori);
+    if isempty(input.E)
+        hhb(i) = bare(X(i), Y(i), [], input.width, input.orientation);
     else
-        [hhb(i),hhe(i,:)] = bare(X(i), Y(i), E(i), width, ori);
-        set(hhe(i,:),'Color',CE(k,:));
+        [hhb(i),hhe(i,:)] = bare(X(i), Y(i), input.E(i), input.width, input.orientation);
+        set(hhe(i,:),'Color',input.CE(k,:));
     end
     % Colour it in correctly
-    set(hhb(i),'FaceColor',C(k,:),'EdgeColor','none');
-    if ~isempty(baseval)
-        set(hhb(i),'BaseValue',baseval);
+    set(hhb(i),'FaceColor',input.C(k,:),'EdgeColor','none');
+    if ~isempty(input.baseval)
+        set(hhb(i),'BaseValue',input.baseval);
     end
 end
 
