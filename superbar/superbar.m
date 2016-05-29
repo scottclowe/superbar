@@ -50,6 +50,11 @@ if isempty(input.CE)
     input.CE = 0.7 * input.C;
 end
 
+if ~ismatrix(Y)
+    error('Y should have no more than 2-dimensions (%d given)', ndims(Y));
+end
+
+
 if size(input.C,1)~=size(input.CE,1)
     error('Number of colours for error does not match colours for bars');
 end
