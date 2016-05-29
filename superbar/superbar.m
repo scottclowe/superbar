@@ -14,7 +14,7 @@
 %   hb: handles of bars
 %   he: handles of error bars
 
-function [hhb,hhe] = superbar(X, Y, varargin)
+function [hhb, hhe] = superbar(X, Y, varargin)
 
 % Input handling
 if ischar(Y)
@@ -61,31 +61,31 @@ wasHeld = ishold(gca);
 % If not, clear the axes and turn hold on
 if ~wasHeld;
     cla;
-    hold(gca,'on');
+    hold(gca, 'on');
 end;
 
 nBar = numel(Y);
-hhb = nan(nBar,1);
-hhe = nan(nBar,2);
+hhb = nan(nBar, 1);
+hhe = nan(nBar, 2);
 for i=1:nBar
     % Check which colour to use
-    k = mod(i-1,size(input.C,1))+1;
+    k = mod(i-1, size(input.C, 1)) + 1;
     % Plot bar with error
     if isempty(input.E)
         hhb(i) = bare(X(i), Y(i), [], input.width, input.orientation);
     else
         [hhb(i),hhe(i,:)] = bare(X(i), Y(i), input.E(i), input.width, input.orientation);
-        set(hhe(i,:),'Color',input.CE(k,:));
+        set(hhe(i,:), 'Color', input.CE(k,:));
     end
     % Colour it in correctly
-    set(hhb(i),'FaceColor',input.C(k,:),'EdgeColor','none');
+    set(hhb(i), 'FaceColor', input.C(k,:), 'EdgeColor', 'none');
     if ~isempty(input.baseval)
-        set(hhb(i),'BaseValue',input.baseval);
+        set(hhb(i), 'BaseValue', input.baseval);
     end
 end
 
 % If hold was off, turn it off again
-if ~wasHeld; hold(gca,'off'); end;
+if ~wasHeld; hold(gca, 'off'); end;
 end
 
 
@@ -101,7 +101,7 @@ end
 %   hb: handles of bars
 %   he: handles of error bars
 
-function [hb,he] = bare(X, Y, E, width, ori)
+function [hb, he] = bare(X, Y, E, width, ori)
 
 % Input handling
 if nargin<3
@@ -125,10 +125,10 @@ wasHeld = ishold(gca);
 % If not, clear the axes and turn hold on
 if ~wasHeld;
     cla;
-    hold(gca,'on');
+    hold(gca, 'on');
 end;
 
-if strncmp(ori,'h',1)
+if strncmp(ori, 'h', 1)
     % Horizontal bars & errors
     hb = barh(X, Y, width);
     if isempty(E)
@@ -147,7 +147,7 @@ else
 end
 
 % If hold was off, turn it off again
-if ~wasHeld; hold(gca,'off'); end;
+if ~wasHeld; hold(gca, 'off'); end;
 end
 
 
@@ -157,10 +157,10 @@ function [XX, Y, varargout] = bar2grouped(X, Y, width)
 % Parameters
 group_width = 0.75;
 
-nGroups = size(Y,1);
-nElePerGroup = size(Y,2);
+nGroups = size(Y, 1);
+nElePerGroup = size(Y, 2);
 
-if size(X,1)==1
+if size(X, 1)==1
     X = X';
 end
 
