@@ -244,3 +244,112 @@ for i=1:numel(X)
 end
 
 end
+
+
+%plot_p_values_pairs
+%   Plot lines and stars to indicate pairwise comparisons and whether they
+%   are significant. Only works for error bars in the Y-direction.
+function [hl, ht] = plot_p_values_pairs(X, Y, E, P, p_threshold, offset, ...
+    show_gt, max_dx_single, max_dx_full, varargin)
+
+% Validate inputs
+N = numel(X);
+assert(numel(Y)==N, 'Number of datapoints mismatch {X,Y}.');
+assert(numel(E)==N, 'Number of datapoints mismatch {X,E}.');
+assert(numel(P)==N^2, 'Number of datapoints mismatch {X,P}.');
+
+% Turn into vectors
+X = X(:);
+Y = Y(:);
+E = E(:);
+P = reshape(P, N, N);
+assert(all(all(P==P' | isnan(P))), 'P must be symmetric between pairs');
+
+% Sort by bar location
+[X, IX] = sort(X);
+Y = Y(IX);
+E = E(IX);
+P = P(IX, IX);
+
+% Ensure P is symmetric
+P = max(P, P');
+% Remove lower triangle
+P(logical(tril(ones(size(P))))) = NaN;
+
+% Find the max of each pair of bars
+pair_max_y = max(repmat(Y + E, 1, N), repmat(Y' + E', N, 1));
+% Find the distance between the bars
+pair_distance = abs(repmat(X, 1, N) - repmat(X', N, 1));
+% Remove pairs which are not measured
+li = isnan(P);
+pair_max_y(li) = NaN;
+pair_distance(li) = NaN;
+
+% Sort by maximum value, smallest first
+[~, I1] = sort(pair_max_y(:));
+pair_distance_tmp = pair_distance(I1);
+% Sort by pair distance
+[~, I2] = sort(pair_distance_tmp);
+% Combine the two mappings into a single indexing step
+IS = I1(I2);
+% Now we have primary sort by pair_distance and secondary sort by max value
+[ISi, ISj] = ind2sub(size(pair_distance), IS);
+
+% For each bar, check how many lines there will be
+num_comp_per_bar = sum(~isnan(max(P, P')), 2);
+dX_list = nan(size(P));
+for i=1:numel(X)
+    dX_list(1:num_comp_per_bar(i), i) = ...
+        (0:(num_comp_per_bar(i)-1)) - (num_comp_per_bar(i)-1) / 2;
+end
+dX_each = min(max_dx_single, max_dx_full / max(num_comp_per_bar));
+dX_list = dX_list * dX_each;
+
+% Minimum value for lines over each bar
+YEO = Y + E + offset / 2;
+current_height = repmat(YEO(:)', N, 1) + offset / 2;
+
+% Loop over every pair with a measurement
+num_comparisons = sum(~isnan(P(:)));
+hl = nan(size(P));
+ht = nan(size(P));
+for iPair=1:num_comparisons
+    % Get index of left and right pairs
+    i = min(ISi(iPair), ISj(iPair));
+    j = max(ISi(iPair), ISj(iPair));
+    % Check which bar origin point we're up to
+    il = find(~isnan(dX_list(:, i)), 1, 'last');
+    jl = find(~isnan(dX_list(:, j)), 1, 'first');
+    % Offset the X value to get the non-intersecting origin point
+    xi = X(i) + dX_list(il, i);
+    xj = X(j) + dX_list(jl, j);
+    % Clear these origin points so they aren't reused
+    dX_list(il, i) = NaN;
+    dX_list(jl, j) = NaN;
+    xx = [xi, xi, xj, xj];
+    % Work out how high the line must be
+    yi = YEO(i);
+    yj = YEO(j);
+    % It must be higher than all intermediate lines; check which these are
+    intermediate_index = (il + N*(i-1)) : (jl + N*(j-1));
+    % Also offset so we are higher than these lines
+    y_ = max(current_height(intermediate_index)) + offset;
+    yy = [yi, y_, y_, yj];
+    % Update intermediates so we know the new hight above them
+    current_height(intermediate_index) = y_;
+    % Draw the line
+    hl(iPair) = line(xx, yy, varargin{:});
+    % Check how many stars to put in the text
+    num_stars = sum(P(iPair) < p_threshold);
+    str = repmat('*', 1, num_stars);
+    % Check whether to include a > sign too
+    if show_gt && all(P(i) < p_threshold)
+        str = ['>' str];
+    end
+    % Add the text for the stars, slightly above the middle of the line
+    ht(iPair) = text(mean([X(i), X(j)]), y_ + offset/4, str, ...
+        'HorizontalAlignment', 'center', ...
+        'VerticalAlignment', 'middle');
+end
+
+end
