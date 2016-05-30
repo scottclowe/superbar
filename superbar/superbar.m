@@ -14,7 +14,7 @@
 %   hb: handles of bars
 %   he: handles of error bars
 
-function [hhb, hhe] = superbar(X, Y, varargin)
+function [hhb, hhe, hht, hhl] = superbar(X, Y, varargin)
 
 % Input handling
 if ischar(Y)
@@ -31,9 +31,16 @@ parser = inputParser;
 addParameter(parser, 'E', []);
 addParameter(parser, 'C', []);
 addParameter(parser, 'CE', []);
+addParameter(parser, 'P', []);
 addParameter(parser, 'width', [], @isnumeric);
 addParameter(parser, 'orientation', 'v');
 addParameter(parser, 'baseval', 0);
+addParameter(parser, 'p_threshold', [0.05, 0.01, 0.001, 0.0001]);
+addParameter(parser, 'show_gt', true);
+addParameter(parser, 'p_offset', []);
+addParameter(parser, 'max_dx_single', []);
+addParameter(parser, 'max_dx_full', []);
+addParameter(parser, 'p_line_color', [.5 .5 .5]);
 % addParameter(parser, 'theme', 'light');
 parse(parser, varargin{:});
 
@@ -49,6 +56,9 @@ end
 if isempty(input.CE)
     input.CE = 0.7 * input.C;
 end
+if isempty(input.p_offset)
+    input.p_offset = 0.075 * max(Y(:));
+end
 
 if ~ismatrix(Y)
     error('Y should have no more than 2-dimensions (%d given)', ndims(Y));
@@ -60,6 +70,13 @@ if size(input.C,1)~=size(input.CE,1)
 end
 
 [X, Y, input.width] = bar2grouped(X, Y, input.width);
+
+if isempty(input.max_dx_single)
+    input.max_dx_single = input.width * 0.25;
+end
+if isempty(input.max_dx_full)
+    input.max_dx_full = input.width * 0.75;
+end
 
 % Check if hold is already on
 wasHeld = ishold(gca);
@@ -88,6 +105,23 @@ for i=1:nBar
     if ~isempty(input.baseval)
         set(hhb(i), 'BaseValue', input.baseval);
     end
+end
+if isempty(input.P)
+    % Do nothing
+    hht = [];
+    hhl = [];
+elseif numel(input.P)==numel(X)
+    % Add stars above bars
+    hht = plot_p_values_single(X, Y, input.E, input.P, input.p_threshold, ...
+        input.p_offset, input.show_gt, input.orientation);
+    hhl= [];
+elseif numel(input.P)==numel(X)^2
+    % Add lines and stars between pairs of bars
+    [hhl, hht] = plot_p_values_pairs(X, Y, input.E, input.P, ...
+        input.p_threshold, input.p_offset, input.show_gt, ...
+        input.max_dx_single, input.max_dx_full, 'Color', input.p_line_color);
+else
+    error('Bad number of P-values');
 end
 
 % If hold was off, turn it off again
