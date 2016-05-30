@@ -79,7 +79,8 @@ for i=1:nBar
     if isempty(input.E)
         hhb(i) = bare(X(i), Y(i), [], input.width, input.orientation);
     else
-        [hhb(i),hhe(i,:)] = bare(X(i), Y(i), input.E(i), input.width, input.orientation);
+        [hhb(i), hhe(i,:)] = bare(X(i), Y(i), input.E(i), input.width, ...
+            input.orientation);
         set(hhe(i,:), 'Color', input.CE(k,:));
     end
     % Colour it in correctly
