@@ -140,7 +140,8 @@ if strncmp(ori, 'h', 1)
     if isempty(E)
         he = [];
     else
-        he = ploterr(Y, X, E, []);
+        he = supererr(Y, X, E, [], 'I', width/2);
+        he = he(:, 1);
     end
 else
     % Vertical bars & errors
@@ -148,7 +149,8 @@ else
     if isempty(E)
         he = [];
     else
-        he = ploterr(X, Y, [], E);
+        he = supererr(X, Y, [], E, 'I', width/2);
+        he = he(:, 2);
     end
 end
 
