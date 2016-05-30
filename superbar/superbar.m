@@ -185,3 +185,62 @@ if nargin>=3
 end
 
 end
+
+
+%plot_p_values_single
+%   Plot stars above bars to indicate which are statistically significant.
+%   Can be used with bars in either horizontal or vertical direction.
+function h = plot_p_values_single(X, Y, E, P, p_threshold, offset, ...
+    show_gt, orientation, baseval)
+
+% Default inputs
+if nargin < 9
+    baseval = 0;
+end
+if nargin < 8
+    orientation = 'v';
+end
+if nargin < 7
+    show_gt = true;
+end
+
+% Validate inputs
+assert(numel(X)==numel(Y), 'Number of datapoints mismatch {X,Y}.');
+assert(numel(X)==numel(E), 'Number of datapoints mismatch {X,E}.');
+assert(numel(X)==numel(P), 'Number of datapoints mismatch {X,P}.');
+assert(all(E >= 0), 'Error must be a non-negative value.');
+assert(offset > 0, 'Offset must be a positive value.');
+
+% Loop over every bar
+h = nan(size(X));
+for i=1:numel(X)
+    % Check how many stars to put in the text
+    num_stars = sum(P(i) <= p_threshold);
+    str = repmat('*', 1, num_stars);
+    % Check whether to include a > sign too
+    if show_gt && all(P(i) < p_threshold)
+        str = ['>' str];
+    end
+    % Work out where to put the text
+    x = X(i);
+    y = Y(i);
+    if strncmpi(orientation, 'h', 1)
+        if x >= baseval
+            x = x + E(i) + offset;
+        else
+            x = x - E(i) - offset;
+        end
+    else
+        if y >= baseval
+            y = y + E(i) + offset;
+        else
+            y = y - E(i) - offset;
+        end
+    end
+    % Add the text for the stars
+    h(i) = text(x, y, str, ...
+        'HorizontalAlignment', 'center', ...
+        'VerticalAlignment', 'middle');
+end
+
+end
