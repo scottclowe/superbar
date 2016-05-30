@@ -41,6 +41,7 @@ addParameter(parser, 'p_offset', []);
 addParameter(parser, 'max_dx_single', []);
 addParameter(parser, 'max_dx_full', []);
 addParameter(parser, 'p_line_color', [.5 .5 .5]);
+addParameter(parser, 'pad_lines', true);
 % addParameter(parser, 'theme', 'light');
 parse(parser, varargin{:});
 
@@ -119,7 +120,8 @@ elseif numel(input.P)==numel(X)^2
     % Add lines and stars between pairs of bars
     [hhl, hht] = plot_p_values_pairs(X, Y, input.E, input.P, ...
         input.p_threshold, input.p_offset, input.show_gt, ...
-        input.max_dx_single, input.max_dx_full, 'Color', input.p_line_color);
+        input.max_dx_single, input.max_dx_full, input.pad_lines, ...
+        'Color', input.p_line_color);
 else
     error('Bad number of P-values');
 end
@@ -284,13 +286,16 @@ end
 %   Plot lines and stars to indicate pairwise comparisons and whether they
 %   are significant. Only works for error bars in the Y-direction.
 function [hl, ht] = plot_p_values_pairs(X, Y, E, P, p_threshold, offset, ...
-    show_gt, max_dx_single, max_dx_full, varargin)
+    show_gt, max_dx_single, max_dx_full, pad_lines, varargin)
 
 % Validate inputs
 N = numel(X);
 assert(numel(Y)==N, 'Number of datapoints mismatch {X,Y}.');
 assert(numel(E)==N, 'Number of datapoints mismatch {X,E}.');
 assert(numel(P)==N^2, 'Number of datapoints mismatch {X,P}.');
+
+% Color to pad lines with
+bg_color = get(gca, 'Color');
 
 % Turn into vectors
 X = X(:);
@@ -347,6 +352,8 @@ current_height = repmat(YEO(:)', N, 1) + offset / 2;
 num_comparisons = sum(~isnan(P(:)));
 hl = nan(size(P));
 ht = nan(size(P));
+hbl = nan(size(P));
+coords = nan(4, 2, num_comparisons);
 for iPair=1:num_comparisons
     % Get index of left and right pairs
     i = min(ISi(iPair), ISj(iPair));
@@ -371,7 +378,18 @@ for iPair=1:num_comparisons
     yy = [yi, y_, y_, yj];
     % Update intermediates so we know the new hight above them
     current_height(intermediate_index) = y_;
+    % Save the co-ordinates to plot later
+    coords(:, 1, iPair) = xx;
+    coords(:, 2, iPair) = yy;
+end
+for iPair=num_comparisons:-1:1
+    % Get co-ordinates back again
+    xx = coords(:, 1, iPair);
+    yy = coords(:, 2, iPair);
     % Draw the line
+    if pad_lines
+        hbl(iPair) = line(xx, yy, 'Color', bg_color, 'LineWidth', 3);
+    end
     hl(iPair) = line(xx, yy, varargin{:});
     % Check how many stars to put in the text
     num_stars = sum(P(iPair) < p_threshold);
@@ -381,7 +399,7 @@ for iPair=1:num_comparisons
         str = ['>' str];
     end
     % Add the text for the stars, slightly above the middle of the line
-    ht(iPair) = text(mean([X(i), X(j)]), y_ + offset/4, str, ...
+    ht(iPair) = text(mean(xx), yy(2) + offset/4, str, ...
         'HorizontalAlignment', 'center', ...
         'VerticalAlignment', 'middle');
 end
