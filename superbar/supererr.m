@@ -49,6 +49,8 @@
 %   specify the color of error bars for both directions, X-direction
 %   only, and Y direction only, respectively.
 %
+%   SUPERERR(AX,...) plots into the axes with handle AX instead of GCA.
+%
 %   H = SUPERERR(...) returns a matrix output with handles to the error
 %   bars, which are line objects. The first column contains error bars
 %   in the X-direction, and the second column the Y-direction. Omitted
@@ -65,16 +67,9 @@ VALID_STYLES = 'I|T''=_';
 COLOR_SPECS = 'rgbwcmyk';
 DEFAULT_STYLE = 'I';
 
-% Fill in missing arguments
-if nargin<3
-    error('Must provide at least 3 input arguments');
-end
-if isempty(XE)
-    XE = nan(numel(X), 1);
-end
-if nargin<4 || isempty(YE)
-    YE = nan(numel(X), 1);
-end
+% Check number of inputs is okay
+narginchk(3, Inf);
+
 % Extend the reach of varargin
 if nargin>=7
     varargin = [{cap_width}, varargin];
@@ -85,6 +80,41 @@ end
 if nargin>=5
     varargin = [{X_style}, varargin];
 end
+if nargin>=4
+    varargin = [{YE}, varargin];
+end
+% Must be at least 3 input arguments
+varargin = [{X, Y, XE}, varargin];
+
+% Strip out axes input if it is there
+[ax, varargin, nargs] = axescheck(varargin{:});
+% Otherwise, default with the current axes
+if isempty(ax)
+    ax = gca;
+end
+% Check number of inputs is still okay
+if nargs<3
+    error('Must provide at least 3 input arguments, in addition to axes.');
+end
+% Read out parameters with ax potentially removed from args
+X = varargin{1};
+Y = varargin{2};
+XE = varargin{3};
+
+% Default inputs for XE and YE
+if isempty(XE)
+    XE = nan(numel(X), 1);
+end
+if nargs<4 || isempty(varargin{4})
+    YE = nan(numel(X), 1);
+else
+    YE = varargin{4};
+end
+
+% Just keep the rest of the arguments
+varargin = varargin(5:end);
+
+% Default args
 X_style = '';
 Y_style = '';
 cap_width = [];
@@ -235,7 +265,7 @@ for i = 1:numel(X)
         % Let the color loop around if it runs out
         iCol = 1 + mod(i-1, size(X_color, 1));
         % Draw the errorbar with line
-        H(i, 1) = line(xco, yco, 'Color', X_color(iCol, :), varargin{:});
+        H(i, 1) = line(ax, xco, yco, 'Color', X_color(iCol, :), varargin{:});
     end
     % Include co-ordinates for Y error bar
     if ~all(isnan(YE(i,:)))
@@ -247,7 +277,7 @@ for i = 1:numel(X)
         % Let the color loop around if it runs out
         iCol = 1 + mod(i-1, size(Y_color, 1));
         % Draw the error bar with line
-        H(i, 2) = line(xco, yco, 'Color', Y_color(iCol, :), varargin{:});
+        H(i, 2) = line(ax, xco, yco, 'Color', Y_color(iCol, :), varargin{:});
     end
 end
 
