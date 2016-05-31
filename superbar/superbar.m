@@ -16,6 +16,9 @@
 
 function [hhb, hhe, hht, hhl] = superbar(X, Y, varargin)
 
+% Check number of inputs is okay
+narginchk(1, Inf);
+
 % Input handling
 if ischar(Y)
     % Deal with omitted X input
