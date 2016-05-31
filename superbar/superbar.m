@@ -244,7 +244,7 @@ end
 assert(numel(X)==numel(Y), 'Number of datapoints mismatch {X,Y}.');
 assert(numel(X)==numel(E), 'Number of datapoints mismatch {X,E}.');
 assert(numel(X)==numel(P), 'Number of datapoints mismatch {X,P}.');
-assert(all(E >= 0), 'Error must be a non-negative value.');
+assert(all(E(:) >= 0), 'Error must be a non-negative value.');
 assert(offset > 0, 'Offset must be a positive value.');
 
 % Loop over every bar
