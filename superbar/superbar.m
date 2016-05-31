@@ -19,12 +19,36 @@ function [hhb, hhe, hht, hhl] = superbar(X, Y, varargin)
 % Check number of inputs is okay
 narginchk(1, Inf);
 
-% Input handling
-if ischar(Y)
-    % Deal with omitted X input
+% Extend the reach of varargin
+if nargin>=2
     varargin = [{Y}, varargin];
-    Y = X;
+end
+varargin = [{X}, varargin];
+
+% Strip out axes input if it is there
+[ax, varargin, nargs] = axescheck(varargin{:});
+% Otherwise, default with the current axes
+if isempty(ax)
+    ax = gca;
+end
+% Check number of inputs is still okay
+if nargs<1
+    error('Must provide at least 1 input argument, in addition to axes.');
+end
+
+% Input handling
+if nargs==1 || ischar(varargin{2})
+    % Deal with omitted X input
+    Y = varargin{1};
     X = 1:size(Y, 1);
+    % Drop the argument
+    varargin = varargin(2:end);
+else
+    % Take X and Y out of varargin
+    X = varargin{1};
+    Y = varargin{2};
+    % Drop these arguments
+    varargin = varargin(3:end);
 end
 if isempty(X)
     X = 1:size(Y, 1);
@@ -83,11 +107,11 @@ if isempty(input.max_dx_full)
 end
 
 % Check if hold is already on
-wasHeld = ishold(gca);
+wasHeld = ishold(ax);
 % If not, clear the axes and turn hold on
 if ~wasHeld;
-    cla;
-    hold(gca, 'on');
+    cla(ax);
+    hold(ax, 'on');
 end;
 
 nBar = numel(Y);
@@ -116,12 +140,12 @@ if isempty(input.P)
     hhl = [];
 elseif numel(input.P)==numel(X)
     % Add stars above bars
-    hht = plot_p_values_single(X, Y, input.E, input.P, input.p_threshold, ...
-        input.p_offset, input.show_gt, input.orientation);
+    hht = plot_p_values_single(ax, X, Y, input.E, input.P, ...
+        input.p_threshold, input.p_offset, input.show_gt, input.orientation);
     hhl= [];
 elseif numel(input.P)==numel(X)^2
     % Add lines and stars between pairs of bars
-    [hhl, hht] = plot_p_values_pairs(X, Y, input.E, input.P, ...
+    [hhl, hht] = plot_p_values_pairs(ax, X, Y, input.E, input.P, ...
         input.p_threshold, input.p_offset, input.show_gt, ...
         input.max_dx_single, input.max_dx_full, input.pad_lines, ...
         'Color', input.p_line_color);
@@ -130,7 +154,14 @@ else
 end
 
 % If hold was off, turn it off again
-if ~wasHeld; hold(gca, 'off'); end;
+if ~wasHeld; hold(ax, 'off'); end;
+
+if nargout==1
+    varargout = {};
+else
+    varargout = {hb, he, hpt, hpl};
+end
+
 end
 
 
@@ -229,7 +260,7 @@ end
 %plot_p_values_single
 %   Plot stars above bars to indicate which are statistically significant.
 %   Can be used with bars in either horizontal or vertical direction.
-function h = plot_p_values_single(X, Y, E, P, p_threshold, offset, ...
+function h = plot_p_values_single(ax, X, Y, E, P, p_threshold, offset, ...
     show_gt, orientation, baseval)
 
 % Default inputs
@@ -277,7 +308,7 @@ for i=1:numel(X)
         end
     end
     % Add the text for the stars
-    h(i) = text(x, y, str, ...
+    h(i) = text(ax, x, y, str, ...
         'HorizontalAlignment', 'center', ...
         'VerticalAlignment', 'middle');
 end
@@ -288,7 +319,7 @@ end
 %plot_p_values_pairs
 %   Plot lines and stars to indicate pairwise comparisons and whether they
 %   are significant. Only works for error bars in the Y-direction.
-function [hl, ht] = plot_p_values_pairs(X, Y, E, P, p_threshold, offset, ...
+function [hl, ht] = plot_p_values_pairs(ax, X, Y, E, P, p_threshold, offset, ...
     show_gt, max_dx_single, max_dx_full, pad_lines, varargin)
 
 % Validate inputs
@@ -391,9 +422,9 @@ for iPair=num_comparisons:-1:1
     yy = coords(:, 2, iPair);
     % Draw the line
     if pad_lines
-        hbl(iPair) = line(xx, yy, 'Color', bg_color, 'LineWidth', 3);
+        hbl(iPair) = line(ax, xx, yy, 'Color', bg_color, 'LineWidth', 3);
     end
-    hl(iPair) = line(xx, yy, varargin{:});
+    hl(iPair) = line(ax, xx, yy, varargin{:});
     % Check how many stars to put in the text
     num_stars = sum(P(iPair) < p_threshold);
     str = repmat('*', 1, num_stars);
@@ -402,7 +433,7 @@ for iPair=num_comparisons:-1:1
         str = ['>' str];
     end
     % Add the text for the stars, slightly above the middle of the line
-    ht(iPair) = text(mean(xx), yy(2) + offset/4, str, ...
+    ht(iPair) = text(ax, mean(xx), yy(2) + star_offset, str, ...
         'HorizontalAlignment', 'center', ...
         'VerticalAlignment', 'middle');
 end
