@@ -229,6 +229,17 @@ end
 if numel(YE)==2 && numel(X)~=2
     YE = repmat(YE(:)', numel(X), 1);
 end
+% Reshape colour arguments
+if ~ischar(X_color)
+    assert(size(X_color, ndims(X_color))==3, ...
+        'Last dimension must be RGB channel.')
+    X_color = reshape(X_color, numel(X_color)/3, 3);
+end
+if ~ischar(Y_color)
+    assert(size(Y_color, ndims(Y_color))==3, ...
+        'Last dimension must be RGB channel.')
+    Y_color = reshape(Y_color, numel(Y_color)/3, 3);
+end
 
 % Check inputs are okay
 assert(numel(X)==numel(Y), 'X and Y need to be the same size.');
