@@ -34,90 +34,90 @@
 %
 %   General plot attributes
 %   -----------------------
-%       'Orientation' : Orientation of the bar plot. Set to 'v' for
-%           vertical bars, or 'h' for horizontal bars. Default is 'v'. Note
-%           that X is still the location of the bars and Y the length of
-%           the bars, even if orientation 'h' is used.
+%   'Orientation' : Orientation of the bar plot. Set to 'v' for
+%       vertical bars, or 'h' for horizontal bars. Default is 'v'. Note
+%       that X is still the location of the bars and Y the length of
+%       the bars, even if orientation 'h' is used.
 %
 %   Bar attributes
 %   --------------
-%       'BaseValue' : Base value from which bars begin. Default is 0.
-%       'BarWidth' : Width of bars. Default is 80% of the minimum
-%           separation between bars as specified in X.
-%       'BarRelativeGroupWidth' : Relative width of bars when they are
-%           grouped. Setting BarRelativeGroupWidth to 1 will have no spaces
-%           between bars. Default is 0.8.
-%       'BarFaceColor' : Color of the bars. Can be a colorspec string
-%           (one of 'rgbymckw'), or an RGB array. In the case of an RGB
-%           array, the size can be m-by-3 or m-by-n-by-3. If the input
-%           contains fewer than M rows (or N columns in the later case),
-%           the colors are repeated cyclically. Alternatively, can be set
-%           to 'none' for transparent bar faces. Default is [.4, .4, .4].
-%       'BarEdgeColor' : Color of the bars edges. For input options, see
-%           'BarFaceColor'. Default is 'none'.
+%   'BaseValue' : Base value from which bars begin. Default is 0.
+%   'BarWidth' : Width of bars. Default is 80% of the minimum
+%       separation between bars as specified in X.
+%   'BarRelativeGroupWidth' : Relative width of bars when they are
+%       grouped. Setting BarRelativeGroupWidth to 1 will have no spaces
+%       between bars. Default is 0.8.
+%   'BarFaceColor' : Color of the bars. Can be a colorspec string
+%       (one of 'rgbymckw'), or an RGB array. In the case of an RGB
+%       array, the size can be m-by-3 or m-by-n-by-3. If the input
+%       contains fewer than M rows (or N columns in the later case),
+%       the colors are repeated cyclically. Alternatively, can be set
+%       to 'none' for transparent bar faces. Default is [.4, .4, .4].
+%   'BarEdgeColor' : Color of the bars edges. For input options, see
+%       'BarFaceColor'. Default is 'none'.
 %
 %   Errorbar attributes
 %   -------------------
-%       'E' : Errorbar magnitudes. Can be the same size as Y for specifying
-%           symmetric or one-sided errorbars, or M-by-N-by-2 for asymmetric
-%           errorbars. If E contains only a single value or two values, the
-%           same symmetric or asymmetric errorbars are used for each bar.
-%           Note that the ambiguous case with two bars and two errorbar
-%           values should be disambiguated by ensuring E is 3-dimensional
-%           when specifying asymmetric error bounds. If empty, no errorbars
-%           are shown. Default is [].
-%       'ErrorbarRelativeWidth' : Width of the errorbar caps, relative to
-%           the bar width. Default is 0.7.
-%       'ErrorbarColor' : Color of the errorbars. For input options, see
-%           'BarFaceColor'. Default is the same as BarEdgeColor if it is
-%           not 'none', otherwise 0.75 * BarFaceColor.
-%       'ErrorbarStyle' : Shape of the errorbars to plot. Different
-%           combinations allow plotting only stave, only caps, only
-%           errorbars in a single direction, etc. Default is 'I', which has
-%           a stave and cap in both directions always. See SUPERERR for a
-%           list of possible errorbar styles. For instance, single-
-%           directional errorbars can be acheived with the 'T' style.
-%       'ErrorbarLineWidth' : LineWidth for errorbar lines. Default is 2.
+%   'E' : Errorbar magnitudes. Can be the same size as Y for specifying
+%       symmetric or one-sided errorbars, or M-by-N-by-2 for asymmetric
+%       errorbars. If E contains only a single value or two values, the
+%       same symmetric or asymmetric errorbars are used for each bar.
+%       Note that the ambiguous case with two bars and two errorbar
+%       values should be disambiguated by ensuring E is 3-dimensional
+%       when specifying asymmetric error bounds. If empty, no errorbars
+%       are shown. Default is [].
+%   'ErrorbarRelativeWidth' : Width of the errorbar caps, relative to
+%       the bar width. Default is 0.7.
+%   'ErrorbarColor' : Color of the errorbars. For input options, see
+%       'BarFaceColor'. Default is the same as BarEdgeColor if it is
+%       not 'none', otherwise 0.75 * BarFaceColor.
+%   'ErrorbarStyle' : Shape of the errorbars to plot. Different
+%       combinations allow plotting only stave, only caps, only
+%       errorbars in a single direction, etc. Default is 'I', which has
+%       a stave and cap in both directions always. See SUPERERR for a
+%       list of possible errorbar styles. For instance, single-
+%       directional errorbars can be acheived with the 'T' style.
+%   'ErrorbarLineWidth' : LineWidth for errorbar lines. Default is 2.
 %
 %   P-value comparison attributes
 %   -----------------------------
-%       'P' : P-values. Can be either the same size as Y for specifying the
-%           significance of each bar, or an (N*M)-by-(N*M) symmetric matrix
-%           to indicate comparisons between each bar. If empty, no stars or
-%           comparison lines are shown. Default is [].
-%       'PStarThreshold' : Values which p-values must exceed (be smaller
-%           than or equal to) to earn a star. Default is [0.05, 0.01,
-%           0.001, 0.0001].
-%       'PStarColor' : Color of the text for significance stars. Default is
-%           [.2 .2 .2].
-%       'PStarShowGT' : Whether to show a greater-than sign (>) for
-%           p-values which are smaller than every value in PStarThreshold.
-%           Default is true.
-%       'PStarOffset' : Distance of the stars from the top of the errorbars
-%           (or bars if no errorbars used). Default is 8% of the tallest
-%           bar for single comparisons, or a quarter of PLineOffset for
-%           paired comparisons.
-%       'PLineColor' : Color of the lines indicating comparisons between
-%           bars. Default is [.5 .5 .5].
-%       'PLineWidth' : Width of the lines indicating comparisons between
-%           bars. Default is 2.
-%       'PLineOffset' : Vertical space between the comparison lines.
-%           Default is 8% of the tallest bar.
-%       'PLineSourceRelativeSpacing' : Maximum space between each line
-%           coming from the top of a bar, relative to the width of the bar.
-%           Default is 0.5.
-%       'PLineSourceRelativeBreadth' : Maximum space which the lines coming
-%           from each bar can collectively occupy, relative to the width of the
-%           bar. Default is the same as ErrorbarRelativeWidth, if it is
-%           non-zero, otherwise 0.8.
-%       'PLineBacking' : Whether to pad p-value comparison lines by
-%           plotting them on top of a backing line. Default is true.
-%       'PLineBackingWidth' : Width of the line giving a backing color
-%           behind each the comparison line. Default is 3 times PLineWidth,
-%           so that the space on each side of the line is the same width as
-%           the line itself.
-%       'PLineBackingColor' : Color to use for the backing behind
-%           comparison lines. Default is the axes background color.
+%   'P' : P-values. Can be either the same size as Y for specifying the
+%       significance of each bar, or an (N*M)-by-(N*M) symmetric matrix
+%       to indicate comparisons between each bar. If empty, no stars or
+%       comparison lines are shown. Default is [].
+%   'PStarThreshold' : Values which p-values must exceed (be smaller
+%       than or equal to) to earn a star. Default is [0.05, 0.01,
+%       0.001, 0.0001].
+%   'PStarColor' : Color of the text for significance stars. Default is
+%       [.2 .2 .2].
+%   'PStarShowGT' : Whether to show a greater-than sign (>) for
+%       p-values which are smaller than every value in PStarThreshold.
+%       Default is true.
+%   'PStarOffset' : Distance of the stars from the top of the errorbars
+%       (or bars if no errorbars used). Default is 8% of the tallest
+%       bar for single comparisons, or a quarter of PLineOffset for
+%       paired comparisons.
+%   'PLineColor' : Color of the lines indicating comparisons between
+%       bars. Default is [.5 .5 .5].
+%   'PLineWidth' : Width of the lines indicating comparisons between
+%       bars. Default is 2.
+%   'PLineOffset' : Vertical space between the comparison lines.
+%       Default is 8% of the tallest bar.
+%   'PLineSourceRelativeSpacing' : Maximum space between each line
+%       coming from the top of a bar, relative to the width of the bar.
+%       Default is 0.5.
+%   'PLineSourceRelativeBreadth' : Maximum space which the lines coming
+%       from each bar can collectively occupy, relative to the width of the
+%       bar. Default is the same as ErrorbarRelativeWidth, if it is
+%       non-zero, otherwise 0.8.
+%   'PLineBacking' : Whether to pad p-value comparison lines by
+%       plotting them on top of a backing line. Default is true.
+%   'PLineBackingWidth' : Width of the line giving a backing color
+%       behind each the comparison line. Default is 3 times PLineWidth,
+%       so that the space on each side of the line is the same width as
+%       the line itself.
+%   'PLineBackingColor' : Color to use for the backing behind
+%       comparison lines. Default is the axes background color.
 %
 %   [HB, HE, HPT, HPL, HPB] = SUPERBAR(...) returns handles to the
 %   generated graphics objects. HB contains handles to the bars themselves,
