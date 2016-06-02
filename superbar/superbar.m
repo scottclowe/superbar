@@ -663,10 +663,10 @@ for iPair=num_comparisons:-1:1
     end
     hl(iPair) = line(ax, xx, yy, line_args{:});
     % Check how many stars to put in the text
-    num_stars = sum(P(iPair) < p_threshold);
+    num_stars = sum(P(ISi(iPair), ISj(iPair)) <= p_threshold);
     str = repmat('*', 1, num_stars);
     % Check whether to include a > sign too
-    if show_gt && all(P(i) < p_threshold)
+    if show_gt && all(P(ISi(iPair), ISj(iPair)) < p_threshold)
         str = ['>' str];
     end
     % Add the text for the stars, slightly above the middle of the line
