@@ -629,6 +629,10 @@ for iPair=1:num_comparisons
     % Get index of left and right pairs
     i = min(ISi(iPair), ISj(iPair));
     j = max(ISi(iPair), ISj(iPair));
+    % Check we're not failing terribly
+    if isnan(P(i,j))
+        error('This shouldnt be NaN!');
+    end
     % Check which bar origin point we're up to
     il = find(~isnan(dX_list(:, i)), 1, 'last');
     jl = find(~isnan(dX_list(:, j)), 1, 'first');
