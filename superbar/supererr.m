@@ -247,10 +247,10 @@ end
 if numel(YE)==1
     YE = YE * ones(numel(X), 1);
 end
-if numel(XE)==2 && numel(X)~=2
+if numel(XE)==2 && (numel(X)~=2 || size(XE,1)==1)
     XE = repmat(XE(:)', numel(X), 1);
 end
-if numel(YE)==2 && numel(X)~=2
+if numel(YE)==2 && (numel(X)~=2 || size(YE,1)==1)
     YE = repmat(YE(:)', numel(X), 1);
 end
 % Reshape colour arguments
