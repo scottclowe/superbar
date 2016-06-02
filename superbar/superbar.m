@@ -32,15 +32,15 @@
 %   The inputs can be followed by parameter/value pairs to specify
 %   additional properties, as follows.
 %
-%   General plot attributes
-%   -----------------------
+%       General plot attributes
+%       -----------------------
 %       'Orientation' : Orientation of the bar plot. Set to 'v' for
 %           vertical bars, or 'h' for horizontal bars. Default is 'v'. Note
 %           that X is still the location of the bars and Y the length of
 %           the bars, even if orientation 'h' is used.
 %
-%   Bar attributes
-%   --------------
+%       Bar attributes
+%       --------------
 %       'BaseValue' : Base value from which bars begin. Default is 0.
 %       'BarWidth' : Width of bars. Default is 80% of the minimum
 %           separation between bars as specified in X.
@@ -56,8 +56,8 @@
 %       'BarEdgeColor' : Color of the bars edges. For input options, see
 %           'BarFaceColor'. Default is 'none'.
 %
-%   Errorbar attributes
-%   -------------------
+%       Errorbar attributes
+%       -------------------
 %       'E' : Errorbar magnitudes. Can be the same size as Y for specifying
 %           symmetric or one-sided errorbars, or M-by-N-by-2 for asymmetric
 %           errorbars. If E contains only a single value or two values, the
@@ -79,8 +79,8 @@
 %           directional errorbars can be acheived with the 'T' style.
 %       'ErrorbarLineWidth' : LineWidth for errorbar lines. Default is 2.
 %
-%   P-value comparison attributes
-%   -----------------------------
+%       P-value comparison attributes
+%       -----------------------------
 %       'P' : P-values. Can be either the same size as Y for specifying the
 %           significance of each bar, or an (N*M)-by-(N*M) symmetric matrix
 %           to indicate comparisons between each bar. If empty, no stars or
