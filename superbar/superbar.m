@@ -541,6 +541,10 @@ end
 function h = plot_p_values_single(ax, X, Y, E, P, orientation, baseval, ...
     p_threshold, offset, show_gt, text_color)
 
+if isempty(E)
+    E = zeros(size(Y));
+end
+
 % Validate inputs
 assert(numel(X)==numel(Y), 'Number of datapoints mismatch {X,Y}.');
 assert(numel(X)==numel(E), 'Number of datapoints mismatch {X,E}.');
@@ -597,6 +601,10 @@ end
 function [ht, hl, hbl] = plot_p_values_pairs(ax, X, Y, E, P, p_threshold, ...
     offset, star_offset, show_gt, max_dx_single, max_dx_full, ...
     pad_lines, line_args, pad_args, text_args)
+
+if isempty(E)
+    E = zeros(size(Y));
+end
 
 % Validate inputs
 N = numel(X);
