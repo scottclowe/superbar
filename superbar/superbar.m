@@ -97,6 +97,9 @@
 %           (or bars if no errorbars used). Default is 5% of the tallest
 %           bar for single comparisons, or a quarter of PLineOffset for
 %           paired comparisons.
+%       'PStarFixedOrientation' : Whether to always show stars in the
+%           normal reading direction. If false, the stars will be rotated
+%           for horizontal bars. Default is true.
 %       'PLineColor' : Color of the lines indicating comparisons between
 %           bars. Default is [.5 .5 .5].
 %       'PLineWidth' : Width of the lines indicating comparisons between
@@ -241,6 +244,8 @@ addParameter(parser, 'PStarShowGT', true, ...
     @isscalar);
 addParameter(parser, 'PStarOffset', [], ...
     @(t) (isempty(t) || isscalar(t)) && isnumeric(t));
+addParameter(parser, 'PStarFixedOrientation', true, ...
+    @isscalar);
 addParameter(parser, 'PLineColor', [.5 .5 .5]);
 addParameter(parser, 'PLineWidth', 2, ...
     @(t) (isscalar(t)) && isnumeric(t));
@@ -434,7 +439,8 @@ elseif numel(input.P)==numel(X)
     % Add stars above bars
     hpt = plot_p_values_single(ax, X, Y, input.E, input.P, ...
         input.Orientation, input.BaseValue, input.PStarThreshold, ...
-        input.PStarOffset, input.PStarShowGT, input.PStarColor);
+        input.PStarOffset, input.PStarShowGT, input.PStarColor, ...
+        input.PStarFixedOrientation);
     hpl = [];
     hpb = [];
 elseif numel(input.P)==numel(X)^2
@@ -539,7 +545,7 @@ end
 %   Plot stars above bars to indicate which are statistically significant.
 %   Can be used with bars in either horizontal or vertical direction.
 function h = plot_p_values_single(ax, X, Y, E, P, orientation, baseval, ...
-    p_threshold, offset, show_gt, text_color)
+    p_threshold, offset, show_gt, text_color, fixed_orientation)
 
 if isempty(E)
     E = zeros(size(Y));
@@ -570,7 +576,13 @@ for i=1:numel(X)
         tmp = x;
         x = y;
         y = tmp;
-        HorizontalAlignment = 'left';
+        if fixed_orientation
+            HorizontalAlignment = 'left';
+            rotation = 0;
+        else
+            HorizontalAlignment = 'center';
+            rotation = 270;
+        end
         % Add on the offset to the x co-ordinate
         if x >= baseval
             x = x + E(i) + offset;
@@ -579,6 +591,7 @@ for i=1:numel(X)
         end
     else
         HorizontalAlignment = 'center';
+        rotation = 0;
         if y >= baseval
             y = y + E(i) + offset;
         else
@@ -589,6 +602,7 @@ for i=1:numel(X)
     h(i) = text(ax, x, y, str, ...
         'HorizontalAlignment', HorizontalAlignment, ...
         'VerticalAlignment', 'middle', ...
+        'Rotation', rotation, ...
         'Color', text_color);
 end
 
