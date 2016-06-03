@@ -262,8 +262,13 @@ input = parser.Results;
 % Default input arguments which inherit values from others
 % Bar defaults
 if isempty(input.BarWidth)
-    % Default with 0.8 of the smallest distance between bars
-    input.BarWidth = 0.8 * min(diff(sort(X(:))));
+    if numel(X)>1
+        % Default with 0.8 of the smallest distance between bars
+        input.BarWidth = 0.8 * min(diff(sort(X(:))));
+    else
+        % Just use 0.8 if there's only one bar
+        input.BarWidth = 0.8;
+    end
 end
 % Errorbar defaults
 if isempty(input.ErrorbarColor)
