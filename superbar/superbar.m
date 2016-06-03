@@ -94,7 +94,7 @@
 %           p-values which are smaller than every value in PStarThreshold.
 %           Default is true.
 %       'PStarOffset' : Distance of the stars from the top of the errorbars
-%           (or bars if no errorbars used). Default is 8% of the tallest
+%           (or bars if no errorbars used). Default is 5% of the tallest
 %           bar for single comparisons, or a quarter of PLineOffset for
 %           paired comparisons.
 %       'PLineColor' : Color of the lines indicating comparisons between
@@ -305,7 +305,7 @@ if isempty(input.PStarOffset)
     if numel(input.P)==numel(X) || numel(input.P)==numel(Y)
         % If we're just showing the stars and no lines, base the offset on
         % the maximum of the bars
-        input.PStarOffset = 0.08 * max(abs(Y(:)));
+        input.PStarOffset = 0.05 * max(abs(Y(:)));
     else
         % If we're showing comparison lines, make the stars be a little
         % above the lines so its clear to which they belong
