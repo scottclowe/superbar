@@ -562,12 +562,19 @@ for i=1:numel(X)
     x = X(i);
     y = Y(i);
     if strncmpi(orientation, 'h', 1)
+        % Swap x and y
+        tmp = x;
+        x = y;
+        y = tmp;
+        HorizontalAlignment = 'left';
+        % Add on the offset to the x co-ordinate
         if x >= baseval
             x = x + E(i) + offset;
         else
             x = x - E(i) - offset;
         end
     else
+        HorizontalAlignment = 'center';
         if y >= baseval
             y = y + E(i) + offset;
         else
@@ -576,7 +583,7 @@ for i=1:numel(X)
     end
     % Add the text for the stars
     h(i) = text(ax, x, y, str, ...
-        'HorizontalAlignment', 'center', ...
+        'HorizontalAlignment', HorizontalAlignment, ...
         'VerticalAlignment', 'middle', ...
         'Color', text_color);
 end
