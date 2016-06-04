@@ -546,7 +546,7 @@ end
 %   Plot stars above bars to indicate which are statistically significant.
 %   Can be used with bars in either horizontal or vertical direction.
 function h = plot_p_values_single(ax, X, Y, E, P, orientation, baseval, ...
-    p_threshold, offset, show_gt, text_color, fixed_orientation)
+    p_threshold, offset, show_gt, text_color, fixed_text_orientation)
 
 if isempty(E)
     E = zeros(size(Y));
@@ -577,7 +577,7 @@ for i=1:numel(X)
         tmp = x;
         x = y;
         y = tmp;
-        if fixed_orientation
+        if fixed_text_orientation
             HorizontalAlignment = 'left';
             rotation = 0;
         else
