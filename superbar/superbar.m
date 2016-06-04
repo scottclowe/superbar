@@ -445,7 +445,7 @@ if isempty(input.P)
     hpt = [];
     hpl = [];
     hpb = [];
-elseif numel(input.P)==numel(X)
+elseif numel(input.P)==numel(Y)
     % Add stars above bars
     hpt = plot_p_values_single(ax, X, Y, input.E, input.P, ...
         input.Orientation, input.BaseValue, input.PStarThreshold, ...
@@ -453,7 +453,7 @@ elseif numel(input.P)==numel(X)
         input.PStarFixedOrientation);
     hpl = [];
     hpb = [];
-elseif numel(input.P)==numel(X)^2
+elseif numel(input.P)==numel(Y)^2
     % Add lines and stars between pairs of bars
     [hpt, hpl, hpb] = plot_p_values_pairs(ax, X, Y, input.E, input.P, ...
         input.Orientation, input.PStarThreshold, input.PLineOffset, ...
