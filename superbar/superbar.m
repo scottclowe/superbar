@@ -99,7 +99,8 @@
 %           paired comparisons.
 %       'PStarFixedOrientation' : Whether to always show stars in the
 %           normal reading direction. If false, the stars will be rotated
-%           for horizontal bars. Default is true.
+%           for horizontal bars. Default is true for single bar p-values
+%           and false for pairwise comparisons.
 %       'PLineColor' : Color of the lines indicating comparisons between
 %           bars. Default is [.5 .5 .5].
 %       'PLineWidth' : Width of the lines indicating comparisons between
@@ -244,7 +245,7 @@ addParameter(parser, 'PStarShowGT', true, ...
     @isscalar);
 addParameter(parser, 'PStarOffset', [], ...
     @(t) (isempty(t) || isscalar(t)) && isnumeric(t));
-addParameter(parser, 'PStarFixedOrientation', true, ...
+addParameter(parser, 'PStarFixedOrientation', [], ...
     @isscalar);
 addParameter(parser, 'PLineColor', [.5 .5 .5]);
 addParameter(parser, 'PLineWidth', 2, ...
@@ -315,6 +316,15 @@ if isempty(input.PStarOffset)
         % If we're showing comparison lines, make the stars be a little
         % above the lines so its clear to which they belong
         input.PStarOffset = input.PLineOffset / 4;
+    end
+end
+if isempty(input.PStarFixedOrientation)
+    if numel(input.P)==numel(Y)^2
+        % For pairwise comparisons
+        input.PStarFixedOrientation = false;
+    else
+        % For single bar significance
+        input.PStarFixedOrientation = true;
     end
 end
 if isempty(input.PLineSourceRelativeBreadth)
