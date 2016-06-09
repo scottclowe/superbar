@@ -426,7 +426,7 @@ if ~wasHeld;
 end;
 
 nBar = numel(Y);
-hb = nan(nBar, 1);
+hb = nan(size(Y));
 for iBar=1:nBar
     % Get indices to tell which row and column to take colour from
     [i, j] = ind2sub(size(Y), iBar);
