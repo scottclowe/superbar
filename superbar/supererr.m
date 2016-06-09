@@ -112,9 +112,14 @@ varargin = [{X, Y, XE}, varargin];
 
 % Strip out axes input if it is there
 [ax, varargin, nargs] = axescheck(varargin{:});
-% Otherwise, default with the current axes
-if isempty(ax)
-    ax = gca;
+if ~isempty(ax)
+    % We can't pass an axes argument to the line function because it only
+    % became available in R2016a, so instead we change axes if necessary.
+    % Make a cleanup object to revert focus back to previous axes
+    prev_ax = gca();
+    finishup = onCleanup(@() axes(prev_ax));
+    % Change focus to the axes we want to work on
+    axes(ax);
 end
 % Check number of inputs is still okay
 if nargs<3
@@ -300,7 +305,7 @@ for i = 1:numel(X)
         % Let the color loop around if it runs out
         iCol = 1 + mod(i-1, size(X_color, 1));
         % Draw the errorbar with line
-        H(i, 1) = line(ax, xco, yco, 'Color', X_color(iCol, :), varargin{:});
+        H(i, 1) = line(xco, yco, 'Color', X_color(iCol, :), varargin{:});
     end
     % Include co-ordinates for Y error bar
     if ~all(isnan(YE(i,:)))
@@ -312,7 +317,7 @@ for i = 1:numel(X)
         % Let the color loop around if it runs out
         iCol = 1 + mod(i-1, size(Y_color, 1));
         % Draw the error bar with line
-        H(i, 2) = line(ax, xco, yco, 'Color', Y_color(iCol, :), varargin{:});
+        H(i, 2) = line(xco, yco, 'Color', Y_color(iCol, :), varargin{:});
     end
 end
 
