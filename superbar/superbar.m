@@ -456,7 +456,8 @@ elseif numel(input.P)==numel(Y)
         X, Y, input.E, input.P, ...
         input.Orientation, input.BaseValue, input.PStarThreshold, ...
         input.PStarOffset, input.PStarShowNS, input.PStarShowGT, ...
-        input.PStarColor, input.PStarFixedOrientation);
+        input.PStarFixedOrientation, ...
+        {'Color', input.PStarColor});
     hpl = [];
     hpb = [];
 elseif numel(input.P)==numel(Y)^2
@@ -563,7 +564,7 @@ end
 %   Plot stars above bars to indicate which are statistically significant.
 %   Can be used with bars in either horizontal or vertical direction.
 function h = plot_p_values_single(ax, X, Y, E, P, orientation, baseval, ...
-    p_threshold, offset, show_ns, show_gt, text_color, fixed_text_orientation)
+    p_threshold, offset, show_ns, show_gt, fixed_text_orientation, text_args)
 
 if isempty(E)
     E = zeros(size(Y));
@@ -640,7 +641,7 @@ for i=1:numel(X)
         'VerticalAlignment', 'middle', ...
         'Rotation', rotation, ...
         'Interpreter', 'latex', ...
-        'Color', text_color);
+        text_args{:});
 end
 
 end
