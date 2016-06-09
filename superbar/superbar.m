@@ -728,9 +728,9 @@ current_height = repmat(YEO(:)', N, 1) + offset / 2;
 
 % Loop over every pair with a measurement
 num_comparisons = sum(~isnan(P(:)));
-hl = nan(size(P));
-ht = nan(size(P));
-hbl = nan(size(P));
+hl = nan(num_comparisons, 1);
+ht = nan(num_comparisons, 1);
+hbl = nan(num_comparisons, 1);
 coords = nan(4, 2, num_comparisons);
 for iPair=1:num_comparisons
     % Get index of left and right pairs
