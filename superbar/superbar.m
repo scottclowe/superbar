@@ -175,6 +175,7 @@ varargin = [{X}, varargin];
 
 % Strip out axes input if it is there
 [ax, varargin, nargs] = axescheck(varargin{:});
+ax_or_empty = ax;
 % Otherwise, default with the current axes
 if isempty(ax)
     ax = gca;
@@ -451,7 +452,8 @@ if isempty(input.P)
     hpb = [];
 elseif numel(input.P)==numel(Y)
     % Add stars above bars
-    hpt = plot_p_values_single(ax, X, Y, input.E, input.P, ...
+    hpt = plot_p_values_single(ax_or_empty, ...
+        X, Y, input.E, input.P, ...
         input.Orientation, input.BaseValue, input.PStarThreshold, ...
         input.PStarOffset, input.PStarShowNS, input.PStarShowGT, ...
         input.PStarColor, input.PStarFixedOrientation);
@@ -459,7 +461,8 @@ elseif numel(input.P)==numel(Y)
     hpb = [];
 elseif numel(input.P)==numel(Y)^2
     % Add lines and stars between pairs of bars
-    [hpt, hpl, hpb] = plot_p_values_pairs(ax, X, Y, input.E, input.P, ...
+    [hpt, hpl, hpb] = plot_p_values_pairs(ax_or_empty, ...
+        X, Y, input.E, input.P, ...
         input.Orientation, input.PStarThreshold, input.PLineOffset, ...
         input.PStarOffset, input.PStarShowNS, input.PStarShowGT, ...
         PLineSourceSpacing, PLineSourceBreadth, input.PLineBacking, ...
@@ -573,6 +576,17 @@ assert(numel(X)==numel(P), 'Number of datapoints mismatch {X,P}.');
 assert(all(E(:) >= 0), 'Error must be a non-negative value.');
 assert(offset > 0, 'Offset must be a positive value.');
 
+% Deal with axes
+if ~isempty(ax)
+    % We can't pass an axes argument to the line function because it only
+    % became available in R2016a, so instead we change axes if necessary.
+    % Make a cleanup object to revert focus back to previous axes
+    prev_ax = gca();
+    finishup = onCleanup(@() axes(prev_ax));
+    % Change focus to the axes we want to work on
+    axes(ax);
+end
+
 % Loop over every bar
 h = nan(size(X));
 for i=1:numel(X)
@@ -621,7 +635,7 @@ for i=1:numel(X)
         end
     end
     % Add the text for the stars
-    h(i) = text(ax, x, y, str, ...
+    h(i) = text(x, y, str, ...
         'HorizontalAlignment', HorizontalAlignment, ...
         'VerticalAlignment', 'middle', ...
         'Rotation', rotation, ...
@@ -649,6 +663,17 @@ N = numel(X);
 assert(numel(Y)==N, 'Number of datapoints mismatch {X,Y}.');
 assert(numel(E)==N, 'Number of datapoints mismatch {X,E}.');
 assert(numel(P)==N^2, 'Number of datapoints mismatch {X,P}.');
+
+% Deal with axes
+if ~isempty(ax)
+    % We can't pass an axes argument to the line function because it only
+    % became available in R2016a, so instead we change axes if necessary.
+    % Make a cleanup object to revert focus back to previous axes
+    prev_ax = gca();
+    finishup = onCleanup(@() axes(prev_ax));
+    % Change focus to the axes we want to work on
+    axes(ax);
+end
 
 % Turn into vectors
 X = X(:);
@@ -763,9 +788,9 @@ for iPair=num_comparisons:-1:1
     end
     % Draw the line
     if pad_lines
-        hbl(iPair) = line(ax, xx, yy, pad_args{:});
+        hbl(iPair) = line(xx, yy, pad_args{:});
     end
-    hl(iPair) = line(ax, xx, yy, line_args{:});
+    hl(iPair) = line(xx, yy, line_args{:});
     % Check how many stars to put in the text
     num_stars = sum(P(ISi(iPair), ISj(iPair)) <= p_threshold);
     str = repmat('*', 1, num_stars);
@@ -781,7 +806,7 @@ for iPair=num_comparisons:-1:1
         str = 'n.s.';
     end
     % Add the text for the stars, slightly above the middle of the line
-    ht(iPair) = text(ax, ...
+    ht(iPair) = text(...
         mean(xx([2 3])) + x_offset, mean(yy([2 3])) + y_offset, ...
         str, ...
         'HorizontalAlignment', HorizontalAlignment, ...
