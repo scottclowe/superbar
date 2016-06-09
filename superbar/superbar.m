@@ -802,7 +802,7 @@ for iPair=num_comparisons:-1:1
         HorizontalAlignment = 'center';
         rotation = 0;
     end
-    % Draw the line
+    % Draw the lines
     if pad_lines
         hbl(iPair) = line(xx, yy, pad_args{:});
     end
