@@ -67,7 +67,7 @@
 %           when specifying asymmetric error bounds. If empty, no errorbars
 %           are shown. Default is [].
 %       'ErrorbarRelativeWidth' : Width of the errorbar caps, relative to
-%           the bar width. Default is 0.7.
+%           the bar width. Default is 0.5.
 %       'ErrorbarColor' : Color of the errorbars. For input options, see
 %           'BarFaceColor'. Default is the same as BarEdgeColor if it is
 %           not 'none', otherwise 0.7 * BarFaceColor.
@@ -237,7 +237,7 @@ addParameter(parser, 'BarFaceColor', [.4, .4, .4]);
 addParameter(parser, 'BarEdgeColor', 'none');
 % Errorbar attributes
 addParameter(parser, 'E', []);
-addParameter(parser, 'ErrorbarRelativeWidth', 0.7, ...
+addParameter(parser, 'ErrorbarRelativeWidth', 0.5, ...
     @(t) (isscalar(t)) && isnumeric(t));
 addParameter(parser, 'ErrorbarColor', []);
 addParameter(parser, 'ErrorbarStyle', 'I', ...
