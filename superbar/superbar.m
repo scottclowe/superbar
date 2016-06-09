@@ -745,7 +745,7 @@ dX_list = dX_list * dX_each;
 
 % Minimum value for lines over each bar
 YEO = Y + E + offset / 2;
-current_height = repmat(YEO(:)', N, 1) + offset / 2;
+current_height = repmat(YEO(:)', N, 1);
 
 % Loop over every pair with a measurement
 num_comparisons = sum(~isnan(P(:)));
