@@ -90,6 +90,8 @@
 %           0.001, 0.0001].
 %       'PStarColor' : Color of the text for significance stars. Default is
 %           [.2 .2 .2].
+%       'PStarBackgroundColor' : Background color of the text. Default is the
+%           axes background color.
 %       'PStarFontSize' : Font size of the text for significance stars.
 %           Default is 16.
 %       'PStarShowNS' : Whether to write 'n.s.' above comparisons which are
@@ -246,6 +248,7 @@ addParameter(parser, 'P', []);
 addParameter(parser, 'PStarThreshold', [0.05, 0.01, 0.001, 0.0001], ...
     @isnumeric);
 addParameter(parser, 'PStarColor', [.2 .2 .2]);
+addParameter(parser, 'PStarBackgroundColor', []);
 addParameter(parser, 'PStarFontSize', 16, ...
     @isscalar);
 addParameter(parser, 'PStarShowNS', true, ...
@@ -345,6 +348,10 @@ if isempty(input.PLineSourceRelativeBreadth)
         % Otherwise base it on the bar width
         input.PLineSourceRelativeBreadth = 0.8;
     end
+end
+if isempty(input.PStarBackgroundColor)
+    % Background color behind significance text
+    input.PStarBackgroundColor = get(ax, 'Color');
 end
 if isempty(input.PLineBackingColor)
     % Color to pad lines with
@@ -462,7 +469,8 @@ elseif numel(input.P)==numel(Y)
         input.PStarOffset, input.PStarShowNS, input.PStarShowGT, ...
         input.PStarFixedOrientation, ...
         {'Color', input.PStarColor, ...
-         'FontSize', input.PStarFontSize});
+         'FontSize', input.PStarFontSize, ...
+         'BackgroundColor', input.PStarBackgroundColor});
     hpl = [];
     hpb = [];
 elseif numel(input.P)==numel(Y)^2
@@ -478,7 +486,8 @@ elseif numel(input.P)==numel(Y)^2
         {'Color', input.PLineBackingColor, ...
          'LineWidth' input.PLineBackingWidth}, ...
         {'Color', input.PStarColor, ...
-         'FontSize', input.PStarFontSize});
+         'FontSize', input.PStarFontSize, ...
+         'BackgroundColor', input.PStarBackgroundColor});
 else
     error('Bad number of P-values');
 end
