@@ -90,8 +90,9 @@
 %           0.001, 0.0001].
 %       'PStarColor' : Color of the text for significance stars. Default is
 %           [.2 .2 .2].
-%       'PStarBackgroundColor' : Background color of the text. Default is the
-%           axes background color.
+%       'PStarBackgroundColor' : Background color of the text. Default is
+%           the axes background color for paired comparisons, and 'none'
+%           for single bar p-values.
 %       'PStarFontSize' : Font size of the text for significance stars.
 %           Default is 16.
 %       'PStarShowNS' : Whether to write 'n.s.' above comparisons which are
@@ -350,8 +351,12 @@ if isempty(input.PLineSourceRelativeBreadth)
     end
 end
 if isempty(input.PStarBackgroundColor)
-    % Background color behind significance text
-    input.PStarBackgroundColor = get(ax, 'Color');
+    if numel(input.P)==numel(X) || numel(input.P)==numel(Y)
+        input.PStarBackgroundColor = 'none';
+    else
+        % Background color behind significance text
+        input.PStarBackgroundColor = get(ax, 'Color');
+    end
 end
 if isempty(input.PLineBackingColor)
     % Color to pad lines with
