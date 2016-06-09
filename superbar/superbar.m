@@ -583,6 +583,9 @@ for i=1:numel(X)
     if show_gt && all(P(i) < p_threshold)
         str = ['>' str];
     end
+    if ~isempty(str)
+        str = ['$' str '$'];
+    end
     % Check whether to write n.s. above non-significant bars
     if show_ns && num_stars == 0 && ~isnan(P(i))
         str = 'n.s.';
@@ -622,6 +625,7 @@ for i=1:numel(X)
         'HorizontalAlignment', HorizontalAlignment, ...
         'VerticalAlignment', 'middle', ...
         'Rotation', rotation, ...
+        'Interpreter', 'latex', ...
         'Color', text_color);
 end
 
@@ -769,6 +773,9 @@ for iPair=num_comparisons:-1:1
     if show_gt && all(P(ISi(iPair), ISj(iPair)) < p_threshold)
         str = ['>' str];
     end
+    if ~isempty(str)
+        str = ['$' str '$'];
+    end
     % Check whether to write n.s. above non-significant comparisons
     if show_ns && num_stars == 0
         str = 'n.s.';
@@ -780,6 +787,7 @@ for iPair=num_comparisons:-1:1
         'HorizontalAlignment', HorizontalAlignment, ...
         'VerticalAlignment', 'middle', ...
         'Rotation', rotation, ...
+        'Interpreter', 'latex', ...
         text_args{:});
 end
 
