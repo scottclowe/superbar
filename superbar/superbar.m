@@ -90,6 +90,8 @@
 %           0.001, 0.0001].
 %       'PStarColor' : Color of the text for significance stars. Default is
 %           [.2 .2 .2].
+%       'PStarShowNS' : Whether to write 'n.s.' above comparisons which are
+%           not significant. Default is true.
 %       'PStarShowGT' : Whether to show a greater-than sign (>) for
 %           p-values which are smaller than every value in PStarThreshold.
 %           Default is true.
@@ -241,6 +243,8 @@ addParameter(parser, 'P', []);
 addParameter(parser, 'PStarThreshold', [0.05, 0.01, 0.001, 0.0001], ...
     @isnumeric);
 addParameter(parser, 'PStarColor', [.2 .2 .2]);
+addParameter(parser, 'PStarShowNS', true, ...
+    @isscalar);
 addParameter(parser, 'PStarShowGT', true, ...
     @isscalar);
 addParameter(parser, 'PStarOffset', [], ...
@@ -449,16 +453,16 @@ elseif numel(input.P)==numel(Y)
     % Add stars above bars
     hpt = plot_p_values_single(ax, X, Y, input.E, input.P, ...
         input.Orientation, input.BaseValue, input.PStarThreshold, ...
-        input.PStarOffset, input.PStarShowGT, input.PStarColor, ...
-        input.PStarFixedOrientation);
+        input.PStarOffset, input.PStarShowNS, input.PStarShowGT, ...
+        input.PStarColor, input.PStarFixedOrientation);
     hpl = [];
     hpb = [];
 elseif numel(input.P)==numel(Y)^2
     % Add lines and stars between pairs of bars
     [hpt, hpl, hpb] = plot_p_values_pairs(ax, X, Y, input.E, input.P, ...
         input.Orientation, input.PStarThreshold, input.PLineOffset, ...
-        input.PStarOffset, input.PStarShowGT, PLineSourceSpacing, ...
-        PLineSourceBreadth, input.PLineBacking, ...
+        input.PStarOffset, input.PStarShowNS, input.PStarShowGT, ...
+        PLineSourceSpacing, PLineSourceBreadth, input.PLineBacking, ...
         input.PStarFixedOrientation, ...
         {'Color', input.PLineColor, ...
          'LineWidth', input.PLineWidth}, ...
@@ -556,7 +560,7 @@ end
 %   Plot stars above bars to indicate which are statistically significant.
 %   Can be used with bars in either horizontal or vertical direction.
 function h = plot_p_values_single(ax, X, Y, E, P, orientation, baseval, ...
-    p_threshold, offset, show_gt, text_color, fixed_text_orientation)
+    p_threshold, offset, show_ns, show_gt, text_color, fixed_text_orientation)
 
 if isempty(E)
     E = zeros(size(Y));
@@ -578,6 +582,10 @@ for i=1:numel(X)
     % Check whether to include a > sign too
     if show_gt && all(P(i) < p_threshold)
         str = ['>' str];
+    end
+    % Check whether to write n.s. above non-significant bars
+    if show_ns && num_stars == 0 && ~isnan(P(i))
+        str = 'n.s.';
     end
     % Work out where to put the text
     x = X(i);
@@ -624,8 +632,9 @@ end
 %   Plot lines and stars to indicate pairwise comparisons and whether they
 %   are significant. Only works for error bars in the Y-direction.
 function [ht, hl, hbl] = plot_p_values_pairs(ax, X, Y, E, P, orientation, ...
-    p_threshold, offset, star_offset, show_gt, max_dx_single, max_dx_full, ...
-    pad_lines, fixed_text_orientation, line_args, pad_args, text_args)
+    p_threshold, offset, star_offset, show_ns, show_gt, max_dx_single, ...
+    max_dx_full, pad_lines, fixed_text_orientation, line_args, pad_args, ...
+    text_args)
 
 if isempty(E)
     E = zeros(size(Y));
@@ -759,6 +768,10 @@ for iPair=num_comparisons:-1:1
     % Check whether to include a > sign too
     if show_gt && all(P(ISi(iPair), ISj(iPair)) < p_threshold)
         str = ['>' str];
+    end
+    % Check whether to write n.s. above non-significant comparisons
+    if show_ns && num_stars == 0
+        str = 'n.s.';
     end
     % Add the text for the stars, slightly above the middle of the line
     ht(iPair) = text(ax, ...
