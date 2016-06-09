@@ -744,7 +744,7 @@ current_height = repmat(YEO(:)', N, 1) + offset / 2;
 
 % Loop over every pair with a measurement
 num_comparisons = sum(~isnan(P(:)));
-hl = nan(num_comparisons, 1);
+hl = nan(num_comparisons, 2);
 ht = nan(num_comparisons, 1);
 hbl = nan(num_comparisons, 1);
 coords = nan(4, 2, num_comparisons);
@@ -806,7 +806,7 @@ for iPair=num_comparisons:-1:1
     if pad_lines
         hbl(iPair) = line(xx, yy, pad_args{:});
     end
-    hl(iPair) = line(xx, yy, line_args{:});
+    hl(iPair, 1) = line(xx, yy, line_args{:});
     % Check how many stars to put in the text
     num_stars = sum(P(ISi(iPair), ISj(iPair)) <= p_threshold);
     str = repmat('*', 1, num_stars);
@@ -830,6 +830,21 @@ for iPair=num_comparisons:-1:1
         'Rotation', rotation, ...
         'Interpreter', 'latex', ...
         text_args{:});
+end
+
+% Plot the horizontal lines again, on top of everything else (specifically
+% so they are on top of the text)
+for iPair=num_comparisons:-1:1
+    % Get co-ordinates back again
+    if strncmpi(orientation, 'h', 1)
+        xx = coords(:, 2, iPair);
+        yy = coords(:, 1, iPair);
+    else
+        xx = coords(:, 1, iPair);
+        yy = coords(:, 2, iPair);
+    end
+    % Draw the horizontal lines again on top of everything else
+    hl(iPair, 2) = line(xx(2:3), yy(2:3), line_args{:});
 end
 
 end
