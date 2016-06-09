@@ -94,7 +94,7 @@
 %           the axes background color for paired comparisons, and 'none'
 %           for single bar p-values.
 %       'PStarFontSize' : Font size of the text for significance stars.
-%           Default is 16.
+%           Default is 14.
 %       'PStarShowNS' : Whether to write 'n.s.' above comparisons which are
 %           not significant. Default is true.
 %       'PStarShowGT' : Whether to show a greater-than sign (>) for
@@ -250,7 +250,7 @@ addParameter(parser, 'PStarThreshold', [0.05, 0.01, 0.001], ...
     @isnumeric);
 addParameter(parser, 'PStarColor', [.2 .2 .2]);
 addParameter(parser, 'PStarBackgroundColor', []);
-addParameter(parser, 'PStarFontSize', 16, ...
+addParameter(parser, 'PStarFontSize', 14, ...
     @isscalar);
 addParameter(parser, 'PStarShowNS', true, ...
     @isscalar);
