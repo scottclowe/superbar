@@ -867,7 +867,7 @@ for iPair=num_comparisons:-1:1
         yy = coords(:, 2, iPair);
     end
     % Draw the horizontal lines again on top of everything else
-    hl(i, j, 2) = line(xx(2:3), yy(2:3), line_args{:});
+    hl(i, j, 2) = line(xx([2 3]), yy([2 3]), line_args{:});
 end
 
 end
