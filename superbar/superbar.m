@@ -194,7 +194,7 @@ end
 if nargs==1 || ischar(varargin{2})
     % Deal with omitted X input
     Y = varargin{1};
-    X = 1:size(Y, 1);
+    X = [];
     % Drop the argument
     varargin = varargin(2:end);
 else
@@ -234,7 +234,7 @@ addParameter(parser, 'BarWidth', [], ...
 addParameter(parser, 'BarRelativeGroupWidth', 0.8, ...
     @(t) (isscalar(t)) && isnumeric(t));
 addParameter(parser, 'BarFaceColor', [.4, .4, .4]);
-addParameter(parser, 'BarEdgeColor', 'none');
+addParameter(parser, 'BarEdgeColor', []);
 % Errorbar attributes
 addParameter(parser, 'E', []);
 addParameter(parser, 'ErrorbarRelativeWidth', 0.5, ...
@@ -287,6 +287,13 @@ if isempty(input.BarWidth)
     else
         % Just use 0.8 if there's only one bar
         input.BarWidth = 0.8;
+    end
+end
+if isempty(input.BarEdgeColor)
+    if isequal(input.BarFaceColor, 'none')
+        input.BarEdgeColor = [.4 .4 .4];
+    else
+        input.BarEdgeColor = 'none';
     end
 end
 % Errorbar defaults
