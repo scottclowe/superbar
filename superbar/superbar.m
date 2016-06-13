@@ -322,6 +322,35 @@ if isempty(input.ErrorbarColor)
         input.ErrorbarColor = 'none';
     end
 end
+
+% Fix size of X, and Y
+% Split up bars which are composed of groups
+if size(X, 2)==1
+    [X, Y, input.BarWidth] = bar2grouped(X, Y, input.BarWidth, ...
+        input.BarRelativeGroupWidth);
+end
+% Check size of X and Y match
+assert(isequal(size(X), size(Y)), ...
+    'Sizes of X and Y must match. Sizes were %s and %s.', ...
+    mat2str(size(X)), mat2str(size(Y)));
+
+% Fix shape of E
+if numel(input.E)==1
+    input.E = repmat(input.E, numel(Y), 1);
+elseif numel(input.E)==2*numel(Y)
+    input.E = reshape(input.E, numel(Y), 2);
+elseif numel(input.E)==2 && (numel(Y)~=2 || ~ismatrix(input.E))
+    input.E = repmat(input.E(:)', numel(Y), 1);
+elseif numel(input.E)==numel(Y)
+    input.E = input.E(:);
+elseif ~isempty(input.E)
+    error(...
+        ['E input must contain either the same number of values as Y' ...
+        ' (for symmetric errorbars), or twice as many values (for' ...
+        ' asymmetric errorbars), or a single value/pair of values (to' ...
+        ' use the same error for every bar).']);
+end
+
 % P-value defaults
 if isempty(input.PLineOffset)
     % Base the offset on the maximum of the bars
@@ -373,37 +402,10 @@ if isempty(input.PLineBackingWidth)
     input.PLineBackingWidth = 3 * input.PLineWidth;
 end
 
-% Split up bars which are composed of groups
-if size(X, 2)==1
-    [X, Y, input.BarWidth] = bar2grouped(X, Y, input.BarWidth, ...
-        input.BarRelativeGroupWidth);
-end
-% Check size of X and Y match
-assert(isequal(size(X), size(Y)), ...
-    'Sizes of X and Y must match. Sizes were %s and %s.', ...
-    mat2str(size(X)), mat2str(size(Y)));
-
 % Fix relative widths
 errorbarWidth = input.ErrorbarRelativeWidth * input.BarWidth;
 PLineSourceBreadth = input.PLineSourceRelativeBreadth * input.BarWidth;
 PLineSourceSpacing = input.PLineSourceRelativeSpacing * input.BarWidth;
-
-% Fix shape of E
-if numel(input.E)==1
-    input.E = repmat(input.E, numel(Y), 1);
-elseif numel(input.E)==2*numel(Y)
-    input.E = reshape(input.E, numel(Y), 2);
-elseif numel(input.E)==2 && (numel(Y)~=2 || ~ismatrix(input.E))
-    input.E = repmat(input.E(:)', numel(Y), 1);
-elseif numel(input.E)==numel(Y)
-    input.E = input.E(:);
-elseif ~isempty(input.E)
-    error(...
-        ['E input must contain either the same number of values as Y' ...
-        ' (for symmetric errorbars), or twice as many values (for' ...
-        ' asymmetric errorbars), or a single value/pair of values (to' ...
-        ' use the same error for every bar).']);
-end
 
 % Extend colors to be per bar
 function C = extend_colors(C)
