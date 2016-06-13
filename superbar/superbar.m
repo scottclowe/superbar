@@ -821,11 +821,10 @@ for iPair=num_comparisons:-1:1
         HorizontalAlignment = 'center';
         rotation = 0;
     end
-    % Draw the lines
+    % Draw the backing line
     if pad_lines
-        hbl(i, j) = line(xx, yy, pad_args{:});
+        hbl(i, j) = line(xx([2 3]), yy([2 3]), pad_args{:});
     end
-    hl(i, j, 1) = line(xx, yy, line_args{:});
     % Check how many stars to put in the text
     num_stars = sum(P(i, j) <= p_threshold);
     str = repmat('*', 1, num_stars);
@@ -849,6 +848,8 @@ for iPair=num_comparisons:-1:1
         'Rotation', rotation, ...
         'Interpreter', 'latex', ...
         text_args{:});
+    % Draw the main lines
+    hl(i, j, 1) = line(xx, yy, line_args{:});
 end
 
 % Plot the horizontal lines again, on top of everything else (specifically
