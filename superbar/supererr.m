@@ -14,7 +14,7 @@
 %
 %   Various error bar types, and colors may be obtained with
 %   SUPERERR(X,Y,XE,YE,S) where S is a character string made from one
-%   element from any or all the following 2 columns:
+%   element each from any or all the following 2 columns:
 %
 %          b     blue          I     two-direction capped error-bar
 %          g     green         |     two-direction stave without caps
