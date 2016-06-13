@@ -753,7 +753,7 @@ dX_each = min(max_dx_single, max_dx_full / max(num_comp_per_bar));
 dX_list = dX_list * dX_each;
 
 % Minimum value for lines over each bar
-YEO = Y + E + offset / 2;
+YEO = Y + E;
 current_height = repmat(YEO(:)', N, 1);
 
 % Loop over every pair with a measurement
