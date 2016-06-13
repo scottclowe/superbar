@@ -413,7 +413,7 @@ function C = extend_colors(C)
         assert(length(siz_)<=3, 'Too many dimensions for C.');
         assert(siz_(end)==3, 'Must be RGB color in C with 3 channels.');
     end
-    if length(siz_)==2
+    if length(siz_)==2 && ( ~ischar(C) || isequal(C, 'none') )
         C = permute(C, [1, 3, 2]);
     end
     siz_ = size(C);
