@@ -784,7 +784,11 @@ for iPair=1:num_comparisons
     yi = YEO(i);
     yj = YEO(j);
     % It must be higher than all intermediate lines; check which these are
-    intermediate_index = (il + N*(i-1)) : (jl + N*(j-1));
+    if dX_each==0
+        intermediate_index = (1 + N*(i-1)) : ( N*j );
+    else
+        intermediate_index = (il + N*(i-1)) : (jl + N*(j-1));
+    end
     % Also offset so we are higher than these lines
     y_ = max(current_height(intermediate_index)) + offset;
     yy = [yi, y_, y_, yj];
