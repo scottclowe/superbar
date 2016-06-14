@@ -114,6 +114,10 @@
 %           bars. Default is 2.
 %       'PLineOffset' : Vertical space between the comparison lines.
 %           Default is 10% of the tallest bar.
+%       'PLineOffsetSource' : Vertical space between the comparison lines,
+%           used only when there is no horizontal spaces between lines
+%           coming up from the same bar. Default is a quarter of
+%           PLineOffset.
 %       'PLineSourceRelativeSpacing' : Maximum space between each line
 %           coming from the top of a bar, relative to the width of the bar.
 %           Default is 0.5.
@@ -122,7 +126,10 @@
 %           bar. Default is the same as ErrorbarRelativeWidth, if it is
 %           non-zero, otherwise 0.8.
 %       'PLineBacking' : Whether to pad p-value comparison lines by
-%           plotting them on top of a backing line. Default is true.
+%           plotting them on top of a backing line. Default is false if
+%           there is no space between the line sources (i.e. one of
+%           PLineSourceRelativeSpacing and PLineSourceRelativeBreadth is
+%           equal to 0) and true otherwise.
 %       'PLineBackingWidth' : Width of the line giving a backing color
 %           behind each the comparison line. Default is 3 times PLineWidth,
 %           so that the space on each side of the line is the same width as
@@ -265,12 +272,13 @@ addParameter(parser, 'PLineWidth', 2, ...
     @(t) (isscalar(t)) && isnumeric(t));
 addParameter(parser, 'PLineOffset', [], ...
     @(t) (isempty(t) || isscalar(t)) && isnumeric(t));
+addParameter(parser, 'PLineOffsetSource', [], ...
+    @(t) (isempty(t) || isscalar(t)) && isnumeric(t));
 addParameter(parser, 'PLineSourceRelativeSpacing', 0.5, ...
     @(t) (isscalar(t)) && isnumeric(t));
 addParameter(parser, 'PLineSourceRelativeBreadth', [], ...
     @(t) (isempty(t) || isscalar(t)) && isnumeric(t));
-addParameter(parser, 'PLineBacking', true, ...
-    @isscalar);
+addParameter(parser, 'PLineBacking', []);
 addParameter(parser, 'PLineBackingWidth', [], ...
     @(t) (isempty(t) || isscalar(t)) && isnumeric(t));
 addParameter(parser, 'PLineBackingColor', []);
@@ -367,6 +375,9 @@ if isempty(input.PStarOffset)
         input.PStarOffset = input.PLineOffset / 3;
     end
 end
+if isempty(input.PLineOffsetSource)
+    input.PLineOffsetSource = input.PLineOffset / 4;
+end
 if isempty(input.PStarFixedOrientation)
     if numel(input.P)==numel(Y)^2
         % For pairwise comparisons
@@ -400,6 +411,14 @@ if isempty(input.PLineBackingColor)
 end
 if isempty(input.PLineBackingWidth)
     input.PLineBackingWidth = 3 * input.PLineWidth;
+end
+if isempty(input.PLineBacking)
+    if input.PLineSourceRelativeSpacing == 0 || ...
+            input.PLineSourceRelativeBreadth==0
+        input.PLineBacking = false;
+    else
+        input.PLineBacking = true;
+    end
 end
 
 % Fix relative widths
@@ -492,9 +511,9 @@ elseif numel(input.P)==numel(Y)^2
     [hpt, hpl, hpb] = plot_p_values_pairs(ax_or_empty, ...
         X, Y, input.E, input.P, ...
         input.Orientation, input.PStarThreshold, input.PLineOffset, ...
-        input.PStarOffset, input.PStarShowNS, input.PStarShowGT, ...
-        PLineSourceSpacing, PLineSourceBreadth, input.PLineBacking, ...
-        input.PStarFixedOrientation, ...
+        input.PLineOffsetSource, input.PStarOffset, input.PStarShowNS, ...
+        input.PStarShowGT, PLineSourceSpacing, PLineSourceBreadth, ...
+        input.PLineBacking, input.PStarFixedOrientation, ...
         {'Color', input.PLineColor, ...
          'LineWidth', input.PLineWidth}, ...
         {'Color', input.PLineBackingColor, ...
@@ -680,9 +699,9 @@ end
 %   Plot lines and stars to indicate pairwise comparisons and whether they
 %   are significant. Only works for error bars in the Y-direction.
 function [ht, hl, hbl] = plot_p_values_pairs(ax, X, Y, E, P, orientation, ...
-    p_threshold, offset, star_offset, show_ns, show_gt, max_dx_single, ...
-    max_dx_full, pad_lines, fixed_text_orientation, line_args, pad_args, ...
-    text_args)
+    p_threshold, offset, source_offset, star_offset, show_ns, show_gt, ...
+    max_dx_single, max_dx_full, pad_lines, fixed_text_orientation, ...
+    line_args, pad_args, text_args)
 
 if isempty(E)
     E = zeros(size(Y));
@@ -781,8 +800,13 @@ for iPair=1:num_comparisons
     dX_list(jl, j) = NaN;
     xx = [xi, xi, xj, xj];
     % Work out how high the line must be
-    yi = YEO(i);
-    yj = YEO(j);
+    if dX_each==0
+        yi = current_height(il, i) + source_offset;
+        yj = current_height(jl, j) + source_offset;
+    else
+        yi = YEO(i);
+        yj = YEO(j);
+    end
     % It must be higher than all intermediate lines; check which these are
     if dX_each==0
         intermediate_index = (1 + N*(i-1)) : ( N*j );
