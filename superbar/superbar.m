@@ -794,6 +794,8 @@ for iPair=1:num_comparisons
     coords(:, 1, iPair) = xx;
     coords(:, 2, iPair) = yy;
 end
+
+% Plot backing, text and comparison lines
 for iPair=num_comparisons:-1:1
     % Get index of left and right pairs
     i = min(ISi(iPair), ISj(iPair));
