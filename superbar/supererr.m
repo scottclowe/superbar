@@ -212,7 +212,7 @@ if ~isempty(X_style)
     if isempty(idx)
         X_color = X_style;
         X_style = DEFAULT_STYLE;
-    elseif sum(idx) < numel(X_style)
+    elseif numel(idx) < numel(X_style)
         X_color = X_style([1:idx-1, idx+1:end]);
         X_style = X_style(idx);
     end
@@ -222,7 +222,7 @@ if ~isempty(Y_style)
     if isempty(idx)
         Y_color = Y_style;
         Y_style = DEFAULT_STYLE;
-    elseif sum(idx) < numel(Y_style)
+    elseif numel(idx) < numel(Y_style)
         Y_color = Y_style([1:idx-1, idx+1:end]);
         Y_style = Y_style(idx);
     end
