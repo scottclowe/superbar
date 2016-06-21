@@ -259,12 +259,16 @@ if numel(YE)==2 && (numel(X)~=2 || size(YE,1)==1)
     YE = repmat(YE(:)', numel(X), 1);
 end
 % Reshape colour arguments
-if ~ischar(X_color)
+if ischar(X_color)
+    X_color = X_color(:);
+else
     assert(size(X_color, ndims(X_color))==3, ...
         'Last dimension must be RGB channel.')
     X_color = reshape(X_color, numel(X_color)/3, 3);
 end
-if ~ischar(Y_color)
+if ischar(Y_color)
+    Y_color = Y_color(:);
+else
     assert(size(Y_color, ndims(Y_color))==3, ...
         'Last dimension must be RGB channel.')
     Y_color = reshape(Y_color, numel(Y_color)/3, 3);
