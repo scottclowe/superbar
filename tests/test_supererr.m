@@ -101,7 +101,42 @@ clear all;
 clf;
 supererr([1 2 3], [1 3 2], [0.2; 0.6; 0.2], ...
     [0.4; 0.6; 0.8], 'T');
-title('One-directional T style');
+title('One-directional ''T'' style');
+
+%% One-directional ~ style
+clear all;
+clf;
+supererr([1 2 3], [1 3 2], [0.2; 0.6; 0.2], ...
+    [0.4; 0.6; 0.8], '~');
+title('One-directional ''~'' style');
+
+%% One-directional ' style
+clear all;
+clf;
+supererr([1 2 3], [1 3 2], [0.2; 0.6; 0.2], ...
+    [0.4; 0.6; 0.8], '''');
+title('One-directional '''''' style');
+
+%% One-directional L style
+clear all;
+clf;
+supererr([1 2 3], [1 3 2], [0.2; 0.6; 0.2], ...
+    [0.4; 0.6; 0.8], 'L');
+title('One-directional ''L'' style');
+
+%% One-directional _ style
+clear all;
+clf;
+supererr([1 2 3], [1 3 2], [0.2; 0.6; 0.2], ...
+    [0.4; 0.6; 0.8], '_');
+title('One-directional ''_'' style', 'Interpreter', 'none');
+
+%% One-directional , style
+clear all;
+clf;
+supererr([1 2 3], [1 3 2], [0.2; 0.6; 0.2], ...
+    [0.4; 0.6; 0.8], ',');
+title('One-directional '','' style');
 
 %% Two-directional T style
 clear all;
@@ -109,6 +144,13 @@ clf;
 supererr([1 2 3], [1 3 2], [0.1 0.2; 0.3 0.6; 0.4 0.2], ...
     [0.2 0.4; 0.9 0.6; 0.4 0.8], 'T');
 title('Two-directional T style');
+
+%% Two-directional L style
+clear all;
+clf;
+supererr([1 2 3], [1 3 2], [0.1 0.2; 0.3 0.6; 0.4 0.2], ...
+    [0.2 0.4; 0.9 0.6; 0.4 0.8], 'L');
+title('Two-directional L style');
 
 %% Stave, no caps, magenta
 clear all;
@@ -129,7 +171,7 @@ clear all;
 clf;
 supererr([1 2 3], [1 3 2], [0.1 0.2; 0.3 0.6; 0.4 0.2], ...
     [0.2 0.4; 0.9 0.6; 0.4 0.8], 'gI', 'k_');
-title('Different X and Y styles');
+title('Different X and Y styles, ''gI'' and ''k_''', 'Interpreter', 'none');
 
 %% Set errorbar width
 clear all;
