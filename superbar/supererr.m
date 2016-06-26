@@ -17,18 +17,24 @@
 %   element each from any or all the following 2 columns:
 %
 %          b     blue          I     two-direction capped error-bar
-%          g     green         |     two-direction stave without caps
-%          r     red           T     one-direction capped error-bar
-%          c     cyan          '     one-direction error-bar without caps
-%          m     magenta       =     two-direction caps without stave
-%          y     yellow        _     one-direction cap without stave
-%          k     black
-%          w     white
+%          g     green         T     outward-only capped error-bar
+%          r     red           L     inward-only capped error-bar
+%          c     cyan          |     two-direction stave without caps
+%          m     magenta       '     outward-only error-bar without caps
+%          y     yellow        ,     inward-only error-bar without caps
+%          k     black         =     two-direction caps without stave
+%          w     white         ~     outward-only cap without stave
+%                              _     inward-only cap without stave
 %
-%   For one-directional error bar styles, a vector input for XE or YE is
-%   interpretted as an upper bound only. If XE or YE is a two-column
-%   input, an error bar is shown in each direction. The default style
-%   is 'I'.
+%   For one-directional error bar styles (TL',~_), a vector input for XE
+%   or YE is interpretted a single bound in the given direction only.
+%   Outward and inward are determined relative to a baseline value, with
+%   outward being away from the baseline and inward toward it. The default
+%   baseline value is -Inf, so outward is always in the +ve direction and
+%   inward is -ve. To specify a different baseline value, use the
+%   key/parameter input described below. If XE or YE is a two-column input,
+%   an error bar is alays shown in both directions, irrespective of whether
+%   the style was single- or bi-directional. The default style is 'I'.
 %
 %   Different error bar styles in X and Y directions can be obtained with
 %   SUPERERR(X,Y,XE,YE,XS,YS), where XS is the X error bar style, and YS
@@ -40,6 +46,14 @@
 %   The main inputs can be followed by parameter/value pairs to specify
 %   additional properties of the lines.
 %
+%   The keys 'BaseValue', 'XBaseValue', and 'YBaseValue' can be used to
+%   control the base value for both directions, just X-direction or
+%   just Y-direction respectively. By changing the base value, different
+%   domains will be considered outward and inward. For instance, with a
+%   y base value of 0, datapoints with a positive value will have outward
+%   upward and negative y-value datapoints will have outward downward (both
+%   away from 0).
+%
 %   Colors of error bars can be specified with RGB triples, passed as a
 %   key/parameter pair. Color parameters can be either an n-by-1 char
 %   specifying one of the colorspec values listed above, or an n-by-3
@@ -47,7 +61,7 @@
 %   of error bars; if fewer colors are provided, they are looped over
 %   cyclically. The keys 'Color', 'XColor', and 'YColor' can be used to
 %   specify the color of error bars for both directions, X-direction
-%   only, and Y direction only, respectively.
+%   only, and Y-direction only, respectively.
 %
 %   SUPERERR(AX,...) plots into the axes with handle AX instead of GCA.
 %
@@ -87,7 +101,7 @@
 function varargout = supererr(X, Y, XE, YE, X_style, Y_style, cap_width, ...
     varargin)
 
-VALID_STYLES = 'I|T''=_';
+VALID_STYLES = 'ITL|'',=~_';
 COLOR_SPECS = 'rgbwcmyk';
 DEFAULT_STYLE = 'I';
 
@@ -349,7 +363,7 @@ xx = [];
 yy = [];
 
 % Add co-ordinates for the stave
-if numel(E)>1 && ismember(style, 'I|T''')
+if numel(E)>1 && ismember(style, 'ITL|'',')
     % Asymmetric stave 
     xx = [xx,     0,    0, NaN];
     yy = [yy, -E(1), E(2), NaN];
@@ -358,9 +372,13 @@ elseif numel(E)==1 && ismember(style, 'I|')
     xx = [xx,  0, 0, NaN];
     yy = [yy, -E, E, NaN];
 elseif numel(E)==1 && ismember(style, 'T''')
-    % Half stave
+    % Half stave upper
     xx = [xx, 0, 0, NaN];
     yy = [yy, 0, E, NaN];
+elseif numel(E)==1 && ismember(style, 'L,')
+    % Half stave lower
+    xx = [xx, 0, 0, NaN];
+    yy = [yy, -E, 0, NaN];
 end
 % Don't draw caps on if they don't have any width
 if all(width==0)
@@ -373,7 +391,7 @@ end
 % Halve the width, so we have the amount on each side
 width = width / 2;
 % Add co-ordinates for the caps
-if numel(E)>1 && ismember(style, 'IT=_')
+if numel(E)>1 && ismember(style, 'ITL=~_')
     % Asymmetric caps
     xx = [xx, -width(1), width(1), NaN, -width(2), width(2), NaN];
     yy = [yy,     -E(1),    -E(1), NaN,      E(2),     E(2), NaN];
@@ -381,10 +399,14 @@ elseif numel(E)==1 && ismember(style, 'I=')
     % Symmetric caps
     xx = [xx, -width(1), width(1), NaN, -width(2), width(2), NaN];
     yy = [yy,        -E,       -E, NaN,         E,        E, NaN];
-elseif numel(E)==1 && ismember(style, 'T_')
-    % Single cap
+elseif numel(E)==1 && ismember(style, 'T~')
+    % Single cap upper
     xx = [xx, -width(2), width(2), NaN];
     yy = [yy,         E,        E, NaN];
+elseif numel(E)==1 && ismember(style, 'L_')
+    % Single cap lower
+    xx = [xx, -width(1), width(1), NaN];
+    yy = [yy,        -E,       -E, NaN];
 end
 
 end
