@@ -376,6 +376,8 @@ if isempty(input.PStarOffset)
     end
 end
 if isempty(input.PLineOffsetSource)
+    % Vertical offset between source of comparison line above another line,
+    % used when there is no horizontal space between sources.
     input.PLineOffsetSource = input.PLineOffset / 3;
 end
 if isempty(input.PStarFixedOrientation)
