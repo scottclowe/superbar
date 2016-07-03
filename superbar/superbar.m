@@ -376,7 +376,7 @@ if isempty(input.PStarOffset)
     end
 end
 if isempty(input.PLineOffsetSource)
-    input.PLineOffsetSource = input.PLineOffset / 4;
+    input.PLineOffsetSource = input.PLineOffset / 3;
 end
 if isempty(input.PStarFixedOrientation)
     if numel(input.P)==numel(Y)^2
