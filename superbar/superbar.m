@@ -804,8 +804,8 @@ for iPair=1:num_comparisons
         yi = current_height(il, i) + source_offset;
         yj = current_height(jl, j) + source_offset;
     else
-        yi = YEO(i);
-        yj = YEO(j);
+        yi = YEO(i) + source_offset;
+        yj = YEO(j) + source_offset;
     end
     % It must be higher than all intermediate lines; check which these are
     if dX_each==0
