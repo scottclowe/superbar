@@ -77,7 +77,7 @@ Y = [11 14 13;
 superbar([], Y');
 title('Two groups of three bars, empty X input');
 
-%% Plot into non-current axes !FAILING!
+%% Plot into non-current axes
 clear all;
 clf;
 Y = [11 14 13;
