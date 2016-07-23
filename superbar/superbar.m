@@ -87,7 +87,7 @@
 %           comparison lines are shown. Default is [].
 %       'PStarThreshold' : Values which p-values must exceed (be smaller
 %           than or equal to) to earn a star. Default is [0.05, 0.01,
-%           0.001, 0.0001].
+%           0.001].
 %       'PStarColor' : Color of the text for significance stars. Default is
 %           [.2 .2 .2].
 %       'PStarBackgroundColor' : Background color of the text. Default is
