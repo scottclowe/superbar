@@ -82,12 +82,13 @@ title('Plot 2 errorbars, at once, different symmetric errors');
 %% Plot into non-current axes
 clear all;
 clf;
-ax = subplot(1, 2, 1);
-subplot(1, 2, 2);
-supererr(ax, [1 2 3], [1 3 2], [0.1 0.2; 0.3 0.6; 0.4 0.2], ...
+ax1 = subplot(1, 2, 1);
+ax2 = subplot(1, 2, 2);
+supererr(ax1, [1 2 3], [1 3 2], [0.1 0.2; 0.3 0.6; 0.4 0.2], ...
     [0.2 0.4; 0.9 0.6; 0.4 0.8]);
-text(.3, .5, 'current axes');
-title('Plot into non-current axes');
+text(.5, .5, 'current axes', 'HorizontalAlignment', 'center');
+title(ax1, 'Plot should be here');
+title(ax2, 'Not here');
 
 %% Red style string
 clear all;
