@@ -416,7 +416,7 @@ if isempty(input.PLineBackingWidth)
 end
 if isempty(input.PLineBacking)
     if input.PLineSourceRelativeSpacing == 0 || ...
-            input.PLineSourceRelativeBreadth==0
+            input.PLineSourceRelativeBreadth == 0
         input.PLineBacking = false;
     else
         input.PLineBacking = true;
