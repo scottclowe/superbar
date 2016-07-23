@@ -317,6 +317,33 @@ P = min(P, P');
 superbar(Y, 'E', E, 'P', P, 'orientation', 'h');
 title('Many pair-wise comparison p values, horizontally');
 
+%% Many pair-wise comparison p values, into non-current axes
+clear all;
+clf;
+
+Y = [11 14 13;
+     15 12 16];
+E = [ 3  4  2;
+      5  2  3];
+P = [NaN     1     1    1    1    NaN ;
+     0.05    NaN   1    1    1    1   ;
+     0.04    0.02  NaN  1    1    1   ;
+     0.0009  0.005 1    NaN  1    1   ;
+     0.00001 0.17  0.17 0.17 NaN  1   ;
+     NaN     0.17  0.17 0.17 NaN  NaN ];
+for i=1:sqrt(numel(P))
+    P(i, i) = NaN;
+end
+% Make symmetric
+P = min(P, P');
+
+ax1 = subplot(1, 2, 1);
+ax2 = subplot(1, 2, 2);
+superbar(ax1, Y, 'E', E, 'P', P);
+text(.5, .5, 'current axes', 'HorizontalAlignment', 'center');
+title(ax1, 'Plot should be here');
+title(ax2, 'Not here');
+
 %% Many pair-wise comparison p values, no source spacing
 clear all;
 clf;
