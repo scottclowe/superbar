@@ -122,8 +122,8 @@
 %           coming from the top of a bar, relative to the width of the bar.
 %           Default is 0.5.
 %       'PLineSourceRelativeBreadth' : Maximum space which the lines coming
-%           from each bar can collectively occupy, relative to the width of the
-%           bar. Default is the same as ErrorbarRelativeWidth, if it is
+%           from each bar can collectively occupy, relative to the width of
+%           the bar. Default is the same as ErrorbarRelativeWidth, if it is
 %           non-zero, otherwise 0.8.
 %       'PLineBacking' : Whether to pad p-value comparison lines by
 %           plotting them on top of a backing line. Default is false if
