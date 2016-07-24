@@ -92,7 +92,7 @@
 %           true, a p-value smaller than every element in PStarThreshold is
 %           indicated with (e.g.) '>***' instead of '****', to show the
 %           maximum measured precision has been exceeded. Default is
-%           [0.05, 0.01, 0.001].
+%           [0.05, 0.01, 0.001, 0.0001].
 %       'PStarColor' : Color of the text for significance stars. Default is
 %           [.2 .2 .2].
 %       'PStarBackgroundColor' : Background color of the text. Default is
@@ -258,7 +258,7 @@ addParameter(parser, 'ErrorbarLineWidth', 2, ...
     @(t) (isscalar(t)) && isnumeric(t));
 % P-value attributes
 addParameter(parser, 'P', []);
-addParameter(parser, 'PStarThreshold', [0.05, 0.01, 0.001], ...
+addParameter(parser, 'PStarThreshold', [0.05, 0.01, 0.001, 0.0001], ...
     @isnumeric);
 addParameter(parser, 'PStarColor', [.2 .2 .2]);
 addParameter(parser, 'PStarBackgroundColor', []);
