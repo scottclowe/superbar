@@ -245,7 +245,7 @@ addParameter(parser, 'BarWidth', [], ...
     @(t) (isempty(t) || isscalar(t)) && isnumeric(t));
 addParameter(parser, 'BarRelativeGroupWidth', 0.8, ...
     @(t) (isscalar(t)) && isnumeric(t));
-addParameter(parser, 'BarFaceColor', [.4, .4, .4]);
+addParameter(parser, 'BarFaceColor', []);
 addParameter(parser, 'BarEdgeColor', []);
 % Errorbar attributes
 addParameter(parser, 'E', []);
@@ -300,6 +300,13 @@ if isempty(input.BarWidth)
     else
         % Just use 0.8 if there's only one bar
         input.BarWidth = 0.8;
+    end
+end
+if isempty(input.BarFaceColor)
+    if isempty(input.BarEdgeColor) || isequal(input.BarFaceColor, 'none')
+        input.BarFaceColor = [.4, .4, .4];
+    else
+        input.BarFaceColor = 'none';
     end
 end
 if isempty(input.BarEdgeColor)
