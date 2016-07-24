@@ -1,6 +1,17 @@
 CHANGELOG
 =========
 
+## v1.4.0 - 2016-07-24
+### Added
+- Support for cell array colour inputs.
+- Support inheriting errorbar colour from char string with more than one
+  element.
+- BarLineWidth input added, with default of 2.
+### Changed
+- Bar faces now default to transparent if a bar edge colour is given.
+- Default errorbar colour inherited from bar face colour will now be lighter
+  than the bar if the sum of the face RGB values is less than 0.65.
+
 ## v1.3.2 - 2016-07-24
 ### Added
 - Tutorial for superbar API.
