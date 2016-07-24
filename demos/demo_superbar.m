@@ -662,3 +662,47 @@ superbar(Y, 'P', P, 'BarFaceColor', C);
 % If you've got to the point where its hard to see all the lines, have a
 % serious think about why you're comparing so many things with each other!
 % It's generally not good statistical practice.
+
+
+%% Making the SUPERBAR logo
+
+hf = figure('Position', [100 100 550 400]);
+
+Y = [ 6 14;
+     17 12];
+E = [ 3  1;
+      5  2];
+
+C = [
+    0.90    0.55    0.55
+    0.62    0.76    0.84
+    0.89    0.10    0.11
+    0.12    0.47    0.70
+    ];
+C = reshape(C, [2 2 3]);
+
+P = nan(numel(Y), numel(Y));
+P(1,2) = 0.04;
+P(1,3) = 0.004;
+P(2,4) = 0.10;
+P(3,4) = 0.10;
+% Make P symmetric, by copying the upper triangle onto the lower triangle
+PT = P';
+lidx = tril(true(size(P)), -1);
+P(lidx) = PT(lidx);
+
+superbar(Y, 'E', E, 'P', P, 'BarFaceColor', C, 'Orientation', 'v', ...
+    'ErrorbarStyle', 'T', 'PLineOffset', 3);
+
+% Need to change fontsize
+
+xlim([0.5 2.5]);
+ylim([0 32]);
+
+set(gca, 'XTick', []);
+set(gca, 'YTick', []);
+
+% export_fig('images/logo', '-eps', '-png', '-painters');
+
+% Future feature: put A1 A2 B1 B2 on the x axis at the correct places. This
+% needs X to be returned by SUPERBAR.
