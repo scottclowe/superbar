@@ -1,6 +1,18 @@
 CHANGELOG
 =========
 
+## v1.3.2 - 2016-07-24
+### Added
+- Tutorial for superbar API.
+- README.md.
+- Logo.
+### Changed
+- Default PLineSourceRelativeSpacing now based on errorbar width, if present.
+- Default PStarThreshold is now `[0.05, 0.01, 0.001, 0.0001]`.
+### Fixed
+- Behaviour of > sign when showing significance. Now > appears instead of a
+  star when all thresholds are exceeded.
+
 ## v1.3.1 - 2016-07-24
 ### Added
 - Add unit tests for SUPERBAR.
