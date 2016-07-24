@@ -27,4 +27,10 @@ with MATLAB's `errorbar`:
     - single or dual directional bars
 
 
+License
+-------
+
+See the [LICENSE](LICENSE) file for license rights and limitations (MIT).
+
+
   [fex]:            http://mathworks.com/matlabcentral/fileexchange/57499-superbar
