@@ -327,9 +327,19 @@ if isempty(input.ErrorbarColor)
         color = fix_colors_char(color);
         % Convert char array into RGB array
         color = fix_colors_cell(color);
+        % Ensure array is MxNx3
+        siz = size(color);
+        if length(siz)==2 && siz(2)==3
+            color = permute(color, [1 3 2]);
         end
+        % Make the bar colour lighter
+        lighter_color = 1 - 0.7 * (1 - color);
         % Make the bar colour darker
-        input.ErrorbarColor = 0.7 * color;
+        darker_color = 0.7 * color;
+        % Check when to take lighter and when to take darker
+        is_too_dark = repmat(all(color < 0.2, 3), [1 1 3]);
+        input.ErrorbarColor = ...
+            is_too_dark .* lighter_color + ~is_too_dark .* darker_color;
     else
         % Well if you want everything transparent you can have it, I
         % guess, though maybe this should be an error instead
