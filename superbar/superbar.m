@@ -324,10 +324,9 @@ if isempty(input.ErrorbarColor)
         % Try taking the color from the bar face
         color = input.BarFaceColor;
         % Convert cell into RGB array
+        color = fix_colors_char(color);
+        % Convert char array into RGB array
         color = fix_colors_cell(color);
-        if ischar(color)
-            % Convert string into RGB colour
-            color = colorspec2rgb(color);
         end
         % Make the bar colour darker
         input.ErrorbarColor = 0.7 * color;
