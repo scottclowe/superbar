@@ -337,7 +337,7 @@ if isempty(input.ErrorbarColor)
         % Make the bar colour darker
         darker_color = 0.7 * color;
         % Check when to take lighter and when to take darker
-        is_too_dark = repmat(all(color < 0.2, 3), [1 1 3]);
+        is_too_dark = repmat(sum(color, 3) < 0.65, [1 1 3]);
         input.ErrorbarColor = ...
             is_too_dark .* lighter_color + ~is_too_dark .* darker_color;
     else
