@@ -86,8 +86,13 @@
 %           to indicate comparisons between each bar. If empty, no stars or
 %           comparison lines are shown. Default is [].
 %       'PStarThreshold' : Values which p-values must exceed (be smaller
-%           than or equal to) to earn a star. Default is [0.05, 0.01,
-%           0.001].
+%           than or equal to) to earn a star. If PStarShowGT is false,
+%           significance is indicated with a star for every value in
+%           PStarThreshold which exceeds the p-value. If PStarShowGT is
+%           true, a p-value smaller than every element in PStarThreshold is
+%           indicated with (e.g.) '>***' instead of '****', to show the
+%           maximum measured precision has been exceeded. Default is
+%           [0.05, 0.01, 0.001].
 %       'PStarColor' : Color of the text for significance stars. Default is
 %           [.2 .2 .2].
 %       'PStarBackgroundColor' : Background color of the text. Default is
@@ -655,8 +660,8 @@ for i=1:numel(X)
     num_stars = sum(P(i) <= p_threshold);
     str = repmat('*', 1, num_stars);
     % Check whether to include a > sign too
-    if show_gt && all(P(i) < p_threshold)
-        str = ['>' str];
+    if show_gt && all(P(i) < p_threshold) && numel(str) > 1
+        str = ['>' str(1:end-1)];
     end
     if ~isempty(str)
         str = ['$' str '$'];
@@ -869,8 +874,8 @@ for iPair=num_comparisons:-1:1
     num_stars = sum(P(i, j) <= p_threshold);
     str = repmat('*', 1, num_stars);
     % Check whether to include a > sign too
-    if show_gt && all(P(i, j) < p_threshold)
-        str = ['>' str];
+    if show_gt && all(P(i, j) < p_threshold) && numel(str) > 1
+        str = ['>' str(1:end-1)];
     end
     if ~isempty(str)
         str = ['$' str '$'];
