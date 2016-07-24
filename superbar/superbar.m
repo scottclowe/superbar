@@ -443,6 +443,30 @@ errorbarWidth = input.ErrorbarRelativeWidth * input.BarWidth;
 PLineSourceBreadth = input.PLineSourceRelativeBreadth * input.BarWidth;
 PLineSourceSpacing = input.PLineSourceRelativeSpacing * input.BarWidth;
 
+% Fix cellarray for color input
+function C = fix_colors_cell(C)
+    if ~iscell(C)
+        return;
+    end
+    siz = size(C);
+    assert(numel(siz)<3, 'Too many dimensions for cellarray C.');
+    C_out = nan([siz 3]);
+    for iCol = 1:siz(2)
+        for iRow = 1:siz(1)
+            if ischar(C{iRow, iCol}) && strcmp(C{iRow, iCol}, 'none')
+                % Encode 'none' as NaN. We'll decode it later.
+                C_out(iRow, iCol, :) = NaN;
+            elseif ischar(C{iRow, iCol})
+                C_out(iRow, iCol, :) = colorspec2rgb(C{iRow, iCol});
+            elseif isnumeric(C{iRow, iCol}) && numel(C{iRow, iCol})==3
+                C_out(iRow, iCol, :) = C{iRow, iCol};
+            else
+                error('Cell array must contain only strings and RGB vectors');
+            end
+        end
+    end
+    C = C_out;
+end
 % Extend colors to be per bar
 function C = extend_colors(C)
     siz = size(Y);
@@ -461,6 +485,13 @@ end
 input.BarFaceColor = extend_colors(input.BarFaceColor);
 input.BarEdgeColor = extend_colors(input.BarEdgeColor);
 input.ErrorbarColor = extend_colors(input.ErrorbarColor);
+
+% Map NaN colours back to 'none'
+function C = nan2none(C)
+    if all(isnan(C))
+        C = 'none';
+    end
+end
 
 % Check if hold is already on
 wasHeld = ishold(ax);
