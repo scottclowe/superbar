@@ -62,6 +62,7 @@
 %       'BarEdgeColor' : Color of the bars edges. For input options, see
 %           'BarFaceColor'. Default is 'none', unless 'BarFaceColor' was
 %           set to 'none', in which case 'BarEdgeColor' is [.4 .4 .4].
+%       'BarLineWidth' : Linewidth for the bar edges. Default is 2.
 %
 %       Errorbar attributes
 %       -------------------
@@ -254,6 +255,7 @@ addParameter(parser, 'BarRelativeGroupWidth', 0.8, ...
     @(t) (isscalar(t)) && isnumeric(t));
 addParameter(parser, 'BarFaceColor', []);
 addParameter(parser, 'BarEdgeColor', []);
+addParameter(parser, 'BarLineWidth', 2);
 % Errorbar attributes
 addParameter(parser, 'E', []);
 addParameter(parser, 'ErrorbarRelativeWidth', 0.5, ...
@@ -564,7 +566,8 @@ for iBar=1:nBar
     set(hb(iBar), ...
         'FaceColor', nan2none(input.BarFaceColor(i,j,:)), ...
         'EdgeColor', nan2none(input.BarEdgeColor(i,j,:)), ...
-        'BaseValue', input.BaseValue);
+        'BaseValue', input.BaseValue, ...
+        'LineWidth', input.BarLineWidth);
 end
 % Add errorbars
 if isempty(input.E)
