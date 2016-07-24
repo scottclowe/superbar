@@ -447,6 +447,27 @@ errorbarWidth = input.ErrorbarRelativeWidth * input.BarWidth;
 PLineSourceBreadth = input.PLineSourceRelativeBreadth * input.BarWidth;
 PLineSourceSpacing = input.PLineSourceRelativeSpacing * input.BarWidth;
 
+% Fix char array input for colours; convert to RGB array
+function C = fix_colors_char(C)
+    if ~ischar(C)
+        return;
+    end
+    if numel(C)==1
+        C = colorspec2rgb(C);
+        return;
+    end
+    if strcmp(C, 'none')
+        return;
+    end
+    siz = size(C);
+    C_out = nan([siz 3]);
+    for iCol = 1:siz(2)
+        for iRow = 1:siz(1)
+            C_out(iRow, iCol, :) = colorspec2rgb(C(iRow, iCol));
+        end
+    end
+    C = C_out;
+end
 % Fix cellarray for color input
 function C = fix_colors_cell(C)
     if ~iscell(C)
