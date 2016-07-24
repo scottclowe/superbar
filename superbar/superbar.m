@@ -47,14 +47,21 @@
 %       'BarRelativeGroupWidth' : Relative width of bars when they are
 %           grouped. Setting BarRelativeGroupWidth to 1 will have no spaces
 %           between bars. Default is 0.8.
-%       'BarFaceColor' : Color of the bars. Can be a colorspec string
-%           (one of 'rgbymckw'), or an RGB array. In the case of an RGB
-%           array, the size can be m-by-3 or m-by-n-by-3. If the input
-%           contains fewer than M rows (or N columns in the later case),
-%           the colors are repeated cyclically. Alternatively, can be set
-%           to 'none' for transparent bar faces. Default is [.4, .4, .4].
+%       'BarFaceColor' : Color of the bars. Can be 'none', a colorspec
+%           string (one of 'rgbymckw'), or an RGB array, or a cell array of
+%           colorspec strings, RGB arrays, and 'none' strings. In the case
+%           of an RGB array, the size can be m-by-3 or m-by-n-by-3. If the
+%           input contains fewer than M rows (or N columns in the later
+%           case), the colors are repeated cyclically. Similarly, a cell
+%           array or char array input can be m-by-n to specify multiple
+%           colours, and the array will be repeated as necessary. The
+%           input can be set to 'none' for all transparent bar faces. Cell
+%           array inputs may contain 'none' for some cell elements to make
+%           only certain bars have transparent faces. Default is
+%           [.4, .4, .4].
 %       'BarEdgeColor' : Color of the bars edges. For input options, see
-%           'BarFaceColor'. Default is 'none'.
+%           'BarFaceColor'. Default is 'none', unless 'BarFaceColor' was
+%           set to 'none', in which case 'BarEdgeColor' is [.4 .4 .4].
 %
 %       Errorbar attributes
 %       -------------------
