@@ -179,7 +179,7 @@ C = 'gm';
 superbar(Y, 'BarFaceColor', C');
 title('Coloured bars, char array by group');
 
-%% Coloured bars, with a cell array of strings !FAILING!
+%% Coloured bars, with a cell array of strings
 clear all;
 clf;
 Y = [11 14 13;
@@ -188,7 +188,7 @@ C = {'k', 'r'};
 superbar(Y, 'BarFaceColor', C);
 title('Coloured bars, with a cell array of strings');
 
-%% Coloured bars, with a cell array of strings and RGB vectors !FAILING!
+%% Coloured bars, with a cell array of strings and RGB vectors
 clear all;
 clf;
 Y = [11 14 13;
@@ -197,7 +197,7 @@ C = {'g'; [1 0 0]};
 superbar(Y, 'BarFaceColor', C);
 title('Coloured bars, with a cell array of strings and RGB vectors');
 
-%% Coloured bars, with a cell array of strings, RGBs, and 'none'!FAILING!
+%% Coloured bars, with a cell array of strings, RGBs, and 'none'
 clear all;
 clf;
 Y = [11 14 13;
@@ -220,7 +220,7 @@ C = [.8 .2 .2;
 superbar(Y, 'E', E, 'BarFaceColor', C);
 title('Bars with errorbars');
 
-%% Bars with errorbars, coloured with a char array !FAILING!
+%% Bars with errorbars, coloured with a char array
 clear all;
 clf;
 Y = [11 14 13;
@@ -231,7 +231,7 @@ C = 'ckr';
 superbar(Y, 'E', E, 'BarFaceColor', C);
 title('Bars with errorbars, coloured with a char array');
 
-%% Coloured bars, with a cell array of strings, RGBs, and 'none' !FAILING!
+%% Coloured bars, with a cell array of strings, RGBs, and 'none'
 clear all;
 clf;
 Y = [11 14 13;
