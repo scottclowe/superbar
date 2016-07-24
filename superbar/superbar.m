@@ -482,9 +482,9 @@ function C = extend_colors(C)
     C = repmat(C, ceil(siz(1) / siz_(1)), ceil(siz(2) / siz_(2)));
     C = C(1:siz(1), 1:siz(2), :);
 end
-input.BarFaceColor = extend_colors(input.BarFaceColor);
-input.BarEdgeColor = extend_colors(input.BarEdgeColor);
-input.ErrorbarColor = extend_colors(input.ErrorbarColor);
+input.BarFaceColor = extend_colors(fix_colors_cell(input.BarFaceColor));
+input.BarEdgeColor = extend_colors(fix_colors_cell(input.BarEdgeColor));
+input.ErrorbarColor = extend_colors(fix_colors_cell(input.ErrorbarColor));
 
 % Map NaN colours back to 'none'
 function C = nan2none(C)
@@ -514,8 +514,8 @@ for iBar=1:nBar
     end
     % Colour it in correctly
     set(hb(iBar), ...
-        'FaceColor', input.BarFaceColor(i,j,:), ...
-        'EdgeColor', input.BarEdgeColor(i,j,:), ...
+        'FaceColor', nan2none(input.BarFaceColor(i,j,:)), ...
+        'EdgeColor', nan2none(input.BarEdgeColor(i,j,:)), ...
         'BaseValue', input.BaseValue);
 end
 % Add errorbars
