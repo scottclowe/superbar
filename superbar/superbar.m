@@ -319,10 +319,12 @@ if isempty(input.ErrorbarColor)
         input.ErrorbarColor = input.ErrorbarStyle(idx);
     elseif ~isequal(input.BarEdgeColor, 'none')
         % Try taking the color from the bar edge
-        input.ErrorbarColor = input.BarEdgeColor;
+        input.ErrorbarColor = fix_colors_cell(input.BarEdgeColor);
     elseif ~isequal(input.BarFaceColor, 'none')
         % Try taking the color from the bar face
         color = input.BarFaceColor;
+        % Convert cell into RGB array
+        color = fix_colors_cell(color);
         if ischar(color)
             % Convert string into RGB colour
             color = colorspec2rgb(color);
@@ -334,6 +336,8 @@ if isempty(input.ErrorbarColor)
         % guess, though maybe this should be an error instead
         input.ErrorbarColor = 'none';
     end
+    % Fix rogue NaN values from 'none' within cells (an unusual event)
+    input.ErrorbarColor(isnan(input.ErrorbarColor)) = 0.5;
 end
 
 % Fix size of X, and Y
