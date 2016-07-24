@@ -274,7 +274,7 @@ addParameter(parser, 'PLineOffset', [], ...
     @(t) (isempty(t) || isscalar(t)) && isnumeric(t));
 addParameter(parser, 'PLineOffsetSource', [], ...
     @(t) (isempty(t) || isscalar(t)) && isnumeric(t));
-addParameter(parser, 'PLineSourceRelativeSpacing', 0.5, ...
+addParameter(parser, 'PLineSourceRelativeSpacing', [], ...
     @(t) (isscalar(t)) && isnumeric(t));
 addParameter(parser, 'PLineSourceRelativeBreadth', [], ...
     @(t) (isempty(t) || isscalar(t)) && isnumeric(t));
@@ -387,6 +387,16 @@ if isempty(input.PStarFixedOrientation)
     else
         % For single bar significance
         input.PStarFixedOrientation = true;
+    end
+end
+if isempty(input.PLineSourceRelativeSpacing)
+    if ~isempty(input.ErrorbarRelativeWidth) && input.ErrorbarRelativeWidth>0
+        % The maximum space between any pair of lines should be a fraction
+        % of the errorbar width, if possible.
+        input.PLineSourceRelativeSpacing = 1/3 * input.ErrorbarRelativeWidth;
+    else
+        % Otherwise base it on the bar width
+        input.PLineSourceRelativeSpacing = 1/3;
     end
 end
 if isempty(input.PLineSourceRelativeBreadth)
