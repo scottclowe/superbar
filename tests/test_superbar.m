@@ -126,6 +126,16 @@ C = [.8 .2 .2;
 superbar(Y, 'BarFaceColor', 'none', 'BarEdgeColor', C);
 title('Hollow coloured bars, by group');
 
+%% Implicitly hollow coloured bars, by group
+clear all;
+clf;
+Y = [11 14 13;
+     15 12 16];
+C = [.8 .2 .2;
+     .2 .2 .8];
+superbar(Y, 'BarEdgeColor', C);
+title('Implicitly hollow coloured bars, by group');
+
 %% Coloured bars, by index in group
 clear all;
 clf;
