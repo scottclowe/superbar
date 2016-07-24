@@ -651,7 +651,8 @@ colspec = 'rgbwcmyk';
 
 idx = find(colspec==color(1));
 if isempty(idx)
-    error('colorstr2rgb:InvalidColorString', 'Unknown color string.');
+    error('colorstr2rgb:InvalidColorString', ...
+        'Unknown color string: %s.', color(1));
 end
 
 if idx~=3 || length(color)==1,
