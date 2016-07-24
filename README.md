@@ -13,6 +13,14 @@ Make bar charts rammed full of extra features:
 
 ![Example superbar chart](images/logo.png)
 
+Documentation for `superbar` is available through the MATLAB help interface,
+accessible with `help superbar`.
+
+An interactive tutorial is also included, available at
+[demos/demo_superbar.m](demos/demo_superbar.m).
+This showcases the features of `superbar` and compares the API with that of
+the built-in `bar` function.
+
 
 supererr
 --------
