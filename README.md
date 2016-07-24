@@ -11,6 +11,8 @@ Make bar charts rammed full of extra features:
   lines between the pairs and stars above them 
 - and all this in either horizontal or vertical orientations
 
+![Example superbar chart](images/logo.png)
+
 
 supererr
 --------
