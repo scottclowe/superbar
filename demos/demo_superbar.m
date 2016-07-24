@@ -596,7 +596,9 @@ xlim([0.5 2.5]);
 
 % The order for comparisons is the same as when Y is flattened - first
 % element 1 in group 1, then element 1 in group 2, then element 2 in group
-% 1, etc.
+% 1, etc. Note that this is *not* the same as the order in which the bars
+% appear when they are plotted, since bars are plotted one group at a time.
+
 % In this example, we restricted ourselves to only drawing comparisons
 % within groups, which was 6 comparisons. This is not necessary, but the
 % number of lines plotted will become very large if many comparisons are
