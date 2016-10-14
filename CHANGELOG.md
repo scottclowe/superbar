@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+## v1.4.1 - 2016-10-16
+
+### Added
+- Support for R2007a-R2013a `inputParser` method.
+
+### Fixed
+- Avoid using missing `narginchk` in pre-2011b.
+
+
 ## v1.4.0 - 2016-07-24
 
 ### Added
