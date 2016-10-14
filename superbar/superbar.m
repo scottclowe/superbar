@@ -101,7 +101,23 @@
 %           indicated with (e.g.) '>***' instead of '****', to show the
 %           maximum measured precision has been exceeded. Default is
 %           [0.05, 0.01, 0.001, 0.0001].
-%       'PStarIcon' : Character code to use for stars. Default is '*'.
+%       'PStarIcon' : Character code to use for stars. Suggested values
+%           include the following values:
+%               char(8727) : Asterisk operator, U+2217
+%               char(10033) : Heavy asterisk, U+2731
+%               char(10035) : Eight-spoked asterisk, U+2733
+%               char(128944) : Five-spoked asterisk, U+1F7B0
+%           These integers are each the decimal version of the unicode code
+%           point for the characters, such as would be returned by
+%           `hex2dec('2217')` for instance, where U+2217 is the
+%           hexadecimal code point for asterisk operator. Using a literal
+%           asterisk, '*', is  possible, but ill-advised, since the regular
+%           asterisk is in the position of a raised character, and will
+%           therefore not sit in the middle of its bounding box. The
+%           default is char(8727), the asterisk operator. Note that five-
+%           spoked asterisks are in the 4-byte unicode series, which seem
+%           to not yet be supported by MATLAB (tested with R2016a on Ubuntu
+%           15.10).
 %       'PStarColor' : Color of the text for significance stars. Default is
 %           [.2 .2 .2].
 %       'PStarBackgroundColor' : Background color of the text. Default is
@@ -290,7 +306,7 @@ safelyAddParameter(parser, 'ErrorbarLineWidth', 2, ...
 safelyAddParameter(parser, 'P', []);
 safelyAddParameter(parser, 'PStarThreshold', [0.05, 0.01, 0.001, 0.0001], ...
     @isnumeric);
-safelyAddParameter(parser, 'PStarIcon', '*');
+safelyAddParameter(parser, 'PStarIcon', char(8727));
 safelyAddParameter(parser, 'PStarColor', [.2 .2 .2]);
 safelyAddParameter(parser, 'PStarBackgroundColor', []);
 safelyAddParameter(parser, 'PStarFontSize', 14, ...
@@ -769,9 +785,6 @@ for i=1:numel(X)
     if show_gt && all(P(i) < p_threshold) && numel(str) > 1
         str = ['>' str(1:end-1)];
     end
-    if ~isempty(str)
-        str = ['$' str '$'];
-    end
     % Check whether to write n.s. above non-significant bars
     if show_ns && num_stars == 0 && ~isnan(P(i))
         str = 'n.s.';
@@ -811,7 +824,6 @@ for i=1:numel(X)
         'HorizontalAlignment', HorizontalAlignment, ...
         'VerticalAlignment', 'middle', ...
         'Rotation', rotation, ...
-        'Interpreter', 'latex', ...
         text_args{:});
 end
 
@@ -983,9 +995,6 @@ for iPair=num_comparisons:-1:1
     if show_gt && all(P(i, j) < p_threshold) && numel(str) > 1
         str = ['>' str(1:end-1)];
     end
-    if ~isempty(str)
-        str = ['$' str '$'];
-    end
     % Check whether to write n.s. above non-significant comparisons
     if show_ns && num_stars == 0
         str = 'n.s.';
@@ -997,7 +1006,6 @@ for iPair=num_comparisons:-1:1
         'HorizontalAlignment', HorizontalAlignment, ...
         'VerticalAlignment', 'middle', ...
         'Rotation', rotation, ...
-        'Interpreter', 'latex', ...
         text_args{:});
     % Draw the main lines
     hl(i, j, 1) = line(xx, yy, line_args{:});
