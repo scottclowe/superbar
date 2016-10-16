@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+## v1.5.0 - 2016-10-16
+
+### Added
+- PStarLatex option allows changing whether significance text is rendered
+  using the LaTeX interpreter, with the default now as `'off'`.
+- PStarIcon option allows changing the symbol used for stars.
+
+
 ## v1.4.1 - 2016-10-16
 
 ### Added
