@@ -92,7 +92,11 @@ COLOR_SPECS = 'rgbwcmyk';
 DEFAULT_STYLE = 'I';
 
 % Check number of inputs is okay
-narginchk(3, Inf);
+if exist('narginchk', 'builtin')
+    narginchk(3, Inf);
+elseif abs(nargin) < 3
+    error('MATLAB:narginchk:notEnoughInputs', 'Not enough input arguments.');
+end
 
 % Extend the reach of varargin
 if nargin>=7

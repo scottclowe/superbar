@@ -190,7 +190,11 @@
 function varargout = superbar(X, Y, varargin)
 
 % Check number of inputs is okay
-narginchk(1, Inf);
+if exist('narginchk', 'builtin')
+    narginchk(1, Inf);
+elseif abs(nargin) < 1
+    error('MATLAB:narginchk:notEnoughInputs', 'Not enough input arguments.');
+end
 
 % Extend the reach of varargin
 if nargin>=2
