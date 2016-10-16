@@ -101,8 +101,19 @@
 %           indicated with (e.g.) '>***' instead of '****', to show the
 %           maximum measured precision has been exceeded. Default is
 %           [0.05, 0.01, 0.001, 0.0001].
+%       'PStarLatex' : Whether to use LaTeX for the significance text. If
+%           set to 'off', no text will use the LaTeX interpreter. If
+%           'auto', the stars for significance such as '*' and '>**' will
+%           be wrapped in '$' symbols and the interpreter set to LaTeX
+%           mode, but text indicating non-significance will be left
+%           unchanged. NB: Using 'auto' will cause your text label fonts to
+%           be inconsistent with each other. If 'all' or 'on', text
+%           indicating non-significance will also use the LaTeX
+%           interpreter. NB: Using 'all' or 'on' may cause the font for
+%           'n.s' text to be different to your axes font. Default is 'off'.
 %       'PStarIcon' : Character code to use for stars. Suggested values
 %           include the following values:
+%               '*' : Asterisk, U+002A
 %               char(8727) : Asterisk operator, U+2217
 %               char(10033) : Heavy asterisk, U+2731
 %               char(10035) : Eight-spoked asterisk, U+2733
@@ -110,14 +121,18 @@
 %           These integers are each the decimal version of the unicode code
 %           point for the characters, such as would be returned by
 %           `hex2dec('2217')` for instance, where U+2217 is the
-%           hexadecimal code point for asterisk operator. Using a literal
-%           asterisk, '*', is  possible, but ill-advised, since the regular
-%           asterisk is in the position of a raised character, and will
-%           therefore not sit in the middle of its bounding box. The
-%           default is char(8727), the asterisk operator. Note that five-
-%           spoked asterisks are in the 4-byte unicode series, which seem
-%           to not yet be supported by MATLAB (tested with R2016a on Ubuntu
-%           15.10).
+%           hexadecimal code point for asterisk operator. If PStarLatex is
+%           disabled, the default is char(8727), the asterisk operator. If
+%           PStarLatex is enabled, the default value is '*'. When using
+%           PStarLatex mode, PStarIcon must be a character recognised by
+%           LaTeX (a string composed of ASCII-only characters). When
+%           PStarLatex mode is disabled, using a literal asterisk, '*', is
+%           possible but not advised since the regular asterisk is in the
+%           position of a raised character, and will therefore not sit in
+%           the middle of its bounding box. If you see boxes showing a
+%           rectangle with a cross through them or the wrong symbol instead
+%           of a star, this is because your font does not include this
+%           symbol.
 %       'PStarColor' : Color of the text for significance stars. Default is
 %           [.2 .2 .2].
 %       'PStarBackgroundColor' : Background color of the text. Default is
@@ -177,6 +192,15 @@
 %
 %   Note that unlike BAR and BARH, bars plotted with SUPERBAR are always
 %   grouped and never stacked.
+%
+%   FAQs
+%   ----
+%   - If you see boxes showing a rectangle with a cross through them
+%     instead of stars, this is because your font does not include the
+%     symbol being used. If you're using the default settings and want a
+%     quick fix, set PStarLatex to 'on'. For a proper fix, you'll have to
+%     install a copy of that font with this symbol included (if possible)
+%     and get MATLAB to use it (which can be tricky, to say the least).
 %
 %   See also SUPERERR, BAR, BARH.
 
@@ -306,7 +330,9 @@ safelyAddParameter(parser, 'ErrorbarLineWidth', 2, ...
 safelyAddParameter(parser, 'P', []);
 safelyAddParameter(parser, 'PStarThreshold', [0.05, 0.01, 0.001, 0.0001], ...
     @isnumeric);
-safelyAddParameter(parser, 'PStarIcon', char(8727));
+safelyAddParameter(parser, 'PStarLatex', 'off', ...
+    @(t) (ischar(t) && ismember(t, {'off', 'auto', 'all', 'on'})));
+safelyAddParameter(parser, 'PStarIcon', '');
 safelyAddParameter(parser, 'PStarColor', [.2 .2 .2]);
 safelyAddParameter(parser, 'PStarBackgroundColor', []);
 safelyAddParameter(parser, 'PStarFontSize', 14, ...
@@ -481,6 +507,20 @@ if isempty(input.PLineSourceRelativeBreadth)
         input.PLineSourceRelativeBreadth = 0.8;
     end
 end
+if strcmp(input.PStarLatex, 'on')
+    % Set this as an alias
+    input.PStarLatex = 'all';
+end
+if isempty(input.PStarIcon)
+    if strcmp(input.PStarLatex, 'off')
+        % With latex off, we use an asterisk operator unicode symbol.
+        input.PStarIcon = char(8727);
+    else
+        % With latex on, we use an asterisk, which will be converted into
+        % an asterisk operator by latex.
+        input.PStarIcon = '*';
+    end
+end
 if isempty(input.PStarBackgroundColor)
     if numel(input.P)==numel(X) || numel(input.P)==numel(Y)
         input.PStarBackgroundColor = 'none';
@@ -637,7 +677,7 @@ elseif numel(input.P)==numel(Y)
         X, Y, input.E, input.P, ...
         input.Orientation, input.BaseValue, input.PStarThreshold, ...
         input.PStarOffset, input.PStarShowNS, input.PStarShowGT, ...
-        input.PStarFixedOrientation, input.PStarIcon, ...
+        input.PStarFixedOrientation, input.PStarIcon, input.PStarLatex, ...
         {'Color', input.PStarColor, ...
          'FontSize', input.PStarFontSize, ...
          'BackgroundColor', input.PStarBackgroundColor});
@@ -651,6 +691,7 @@ elseif numel(input.P)==numel(Y)^2
         input.PLineOffsetSource, input.PStarOffset, input.PStarShowNS, ...
         input.PStarShowGT, PLineSourceSpacing, PLineSourceBreadth, ...
         input.PLineBacking, input.PStarFixedOrientation, input.PStarIcon, ...
+        input.PStarLatex, ...
         {'Color', input.PLineColor, ...
          'LineWidth', input.PLineWidth}, ...
         {'Color', input.PLineBackingColor, ...
@@ -751,7 +792,7 @@ end
 %   Can be used with bars in either horizontal or vertical direction.
 function h = plot_p_values_single(ax, X, Y, E, P, orientation, baseval, ...
     p_threshold, offset, show_ns, show_gt, fixed_text_orientation, ...
-    star_icon, text_args)
+    star_icon, use_latex, text_args)
 
 if isempty(E)
     E = zeros(size(Y));
@@ -784,6 +825,10 @@ for i=1:numel(X)
     % Check whether to include a > sign too
     if show_gt && all(P(i) < p_threshold) && numel(str) > 1
         str = ['>' str(1:end-1)];
+    end
+    % Wrap for LaTeX, if its on and we have something to wrap
+    if ~strcmp(use_latex, 'off') && ~isempty(str)
+        str = ['$' str '$'];
     end
     % Check whether to write n.s. above non-significant bars
     if show_ns && num_stars == 0 && ~isnan(P(i))
@@ -825,6 +870,11 @@ for i=1:numel(X)
         'VerticalAlignment', 'middle', ...
         'Rotation', rotation, ...
         text_args{:});
+    % Change the interpreter to LaTeX, if desired
+    if strcmp(use_latex, 'all') || ...
+            (strcmp(use_latex, 'auto') && num_stars > 0)
+        set(h(i), 'Interpreter', 'latex');
+    end
 end
 
 end
@@ -836,7 +886,7 @@ end
 function [ht, hl, hbl] = plot_p_values_pairs(ax, X, Y, E, P, orientation, ...
     p_threshold, offset, source_offset, star_offset, show_ns, show_gt, ...
     max_dx_single, max_dx_full, pad_lines, fixed_text_orientation, ...
-    star_icon, line_args, pad_args, text_args)
+    star_icon, use_latex, line_args, pad_args, text_args)
 
 if isempty(E)
     E = zeros(size(Y));
@@ -995,6 +1045,10 @@ for iPair=num_comparisons:-1:1
     if show_gt && all(P(i, j) < p_threshold) && numel(str) > 1
         str = ['>' str(1:end-1)];
     end
+    % Wrap for LaTeX, if its on and we have something to wrap
+    if ~strcmp(use_latex, 'off') && ~isempty(str)
+        str = ['$' str '$'];
+    end
     % Check whether to write n.s. above non-significant comparisons
     if show_ns && num_stars == 0
         str = 'n.s.';
@@ -1007,6 +1061,11 @@ for iPair=num_comparisons:-1:1
         'VerticalAlignment', 'middle', ...
         'Rotation', rotation, ...
         text_args{:});
+    % Change the interpreter to LaTeX, if desired
+    if strcmp(use_latex, 'all') || ...
+            (strcmp(use_latex, 'auto') && num_stars > 0)
+        set(ht(i, j), 'Interpreter', 'latex');
+    end
     % Draw the main lines
     hl(i, j, 1) = line(xx, yy, line_args{:});
 end
