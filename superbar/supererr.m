@@ -314,6 +314,7 @@ for i = 1:numel(X)
         iCol = 1 + mod(i-1, size(X_color, 1));
         % Draw the errorbar with line
         H(i, 1) = line(xco, yco, 'Color', X_color(iCol, :), varargin{:});
+        set(H(i, 1), 'HandleVisibility', 'off');
     end
     % Include co-ordinates for Y error bar
     if ~all(isnan(YE(i,:)))
@@ -326,8 +327,14 @@ for i = 1:numel(X)
         iCol = 1 + mod(i-1, size(Y_color, 1));
         % Draw the error bar with line
         H(i, 2) = line(xco, yco, 'Color', Y_color(iCol, :), varargin{:});
+        set(H(i, 2), 'HandleVisibility', 'off');
     end
 end
+
+% if provided with NaNs, get rid of NaN handles
+Hvalid = H(~isnan(H));
+% make sure only one errorbar is in legend
+set(Hvalid(1), 'HandleVisibility', 'on');
 
 if nargout==0
     varargout = {};
